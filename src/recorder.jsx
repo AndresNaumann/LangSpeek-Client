@@ -232,7 +232,9 @@ const Recorder = () => {
                       borderRadius: "12px",
                       backgroundColor:
                         message.sender === "user" ? "#4c97a8" : "#e3e5e6",
+                        
                       color: message.sender === "user" ? "#f2f9fa" : "#070808",
+                      textAlign: "left",
                       maxWidth: "60%",
                       wordWrap: "break-word",
                       animation: "growIn 0.3s ease forwards", // Animation to grow
