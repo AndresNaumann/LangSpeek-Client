@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SpeechRecognition, {
- useSpeechRecognition,
+  useSpeechRecognition,
 } from "react-speech-recognition";
 import MicIcon from "@mui/icons-material/Mic";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Recorder = () => {
-
   const [data, setData] = useState("");
   const [englishText, setEnglishText] = useState("");
   const [error, setError] = useState(""); // State to hold error messages
@@ -15,6 +14,7 @@ const Recorder = () => {
   const [editableTranscript, setEditableTranscript] = useState("");
   const [conversation, setConversation] = useState([]);
   const [completedText, setCompletedText] = useState(""); // Add state to hold the completed text
+  const messagesEndRef = useRef(null);
 
   const handleDownloadAudio = async (text) => {
     try {
@@ -48,6 +48,8 @@ const Recorder = () => {
     }
   };
 
+  // Handle the user sending a message
+
   const handleSendMessage = async () => {
     if (editableTranscript.trim() === "") return;
 
@@ -64,6 +66,8 @@ const Recorder = () => {
     setEditableTranscript("");
     resetTranscript();
   };
+
+  // Verbal commands to delete the transcript
 
   const commands = [
     {
@@ -112,20 +116,32 @@ const Recorder = () => {
     setLanguage(newLanguage);
   };
 
+  // Scroll to the bottom of the conversation
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation]);
+
+  // Scroll to the bottom of the conversation
+
   const getLanguageName = (language) => {
     switch (language) {
-      case 'fi':
-        return 'Finnish';
-      case 'es-MX':
-        return 'Spanish';
-      case 'de-DE':
-        return 'German';
-      case 'fr-FR':
-        return 'French';
-      case 'en':
-        return 'English';
+      case "fi":
+        return "Finnish";
+      case "es-MX":
+        return "Spanish";
+      case "de-DE":
+        return "German";
+      case "fr-FR":
+        return "French";
+      case "en":
+        return "English";
       default:
-        return 'English';
+        return "English";
     }
   };
 
@@ -135,7 +151,7 @@ const Recorder = () => {
 
   return (
     <div
-        style={{
+      style={{
         display: "flex",
         flexDirection: "column",
         width: "500px",
@@ -143,7 +159,8 @@ const Recorder = () => {
         alignItems: "center",
       }}
     >
-      <style>{`
+      <style>
+        {`
         /* Custom scrollbar styles */
         div::-webkit-scrollbar {
           width: 8px;
@@ -163,82 +180,107 @@ const Recorder = () => {
           border-radius: 4px;
         }`}
       </style>
-      <div style={{}}>
-        <p>Listening in </p>
-        <MicIcon style={{ fontSize: "20px" }}></MicIcon>
-        <div style={{ display: "flex" }}>
-          <div style={{ margin: "20px" }}>
-            <select
-              className="btn btn-primary"
-              onChange={(e) => handleLanguageChange(e.target.value)}
-            >
-              <option value="en">English</option>
-              <option value="es-MX">Spanish</option>
-              <option value="fr-FR">French</option>
-              <option value="de-DE">German</option>
-              <option value="fi">Finnish</option>
-            </select>
-          </div>
-        </div>
-
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <MicIcon style={{ fontSize: "20px", marginRight: "10px" }}></MicIcon>
+        <p style={{ margin: "0", marginTop: "1px" }}>Listening in</p>
+        <select
+          className="btn btn-primary"
+          onChange={(e) => handleLanguageChange(e.target.value)}
+          style={{ marginLeft: "10px" }}
+        >
+          <option value="en">English</option>
+          <option value="es-MX">Spanish</option>
+          <option value="fr-FR">French</option>
+          <option value="de-DE">German</option>
+          <option value="fi">Finnish</option>
+        </select>
       </div>
       {/* <h4>Listening in {getLanguageName(language)}</h4> */}
-
-      
       {/* Display the current language */}
-      
-      <div
-        style={{
-          width: "100%",
-          maxHeight: "300px",
-          overflowY: "auto",
-          border: "1px solid #ccc",
-          padding: "10px",
-          marginBottom: "10px",
-          borderRadius: "12px", // Rounded corners
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow
-        }}
-      >
-        {conversation.map((message, index) => (
-          <div
-            key={index}
-            style={{
-              textAlign: message.sender === "user" ? "right" : "left",
-              margin: "10px 0",
-            }}
-          >
-            <span
-            style={{
-              display: "inline-block",
-              padding: "8px 12px",
-              borderRadius: "12px",
-              backgroundColor: message.sender === "user" ? "#4c97a8" : "#e3e5e6",
-              color: message.sender === "user" ? "#f2f9fa" : "#070808",
-              maxWidth: "60%",
-              wordWrap: "break-word",
-            }}
-            >
-              {message.text}
-            </span>
-          </div>
-        ))}
-      </div>
+      <br></br>
+      {/* Display the conversation */}
+      {conversation.length > 0 && (
+        <div
+          style={{
+            width: "100%",
+            maxHeight: "400px",
+            overflowY: "auto",
+            border: "1px solid #ccc",
+            padding: "10px",
+            marginBottom: "10px",
+            borderRadius: "12px", // Rounded corners
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow
+            transform: "scale(0.95)", // Start smaller
+            opacity: 0, // Initially invisible
+            animation: "growIn 0.5s ease forwards", // Animation to grow
+          }}
+        >
+          {conversation.map(
+            (message, index) =>
+              message.text && (
+                <div
+                  key={index}
+                  style={{
+                    textAlign: message.sender === "user" ? "right" : "left",
+                    margin: "10px 0",
+                  }}
+                >
+                  <span
+                    style={{
+                      display: "inline-block",
+                      padding: "8px 12px",
+                      borderRadius: "12px",
+                      backgroundColor:
+                        message.sender === "user" ? "#4c97a8" : "#e3e5e6",
+                      color: message.sender === "user" ? "#f2f9fa" : "#070808",
+                      maxWidth: "60%",
+                      wordWrap: "break-word",
+                      animation: "growIn 0.3s ease forwards", // Animation to grow
+                    }}
+                  >
+                    {message.text}
+                  </span>
+                </div>
+              )
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      )}
+      <style>
+        {`
+        @keyframes growIn {
+          0% {
+            transform: scale(0.95); /* Smaller at the start */
+            opacity: 0; /* Invisible at the start */
+          }
+          100% {
+            transform: scale(1); /* Full size */
+            opacity: 1; /* Fully visible */
+          }
+        }
+      `}
+      </style>
+      <audio
+        src={data}
+        autoPlay
+        controls
+        style={{ width: "100%", margin: "10px 0" }}
+      />
+      {/* Display the editable transcript */}
       <input
         type="text"
         placeholder="Type your message here..."
         value={editableTranscript}
         onChange={(e) => setEditableTranscript(e.target.value)}
         style={{
-            width: "calc(100% - 40px)",
-            padding: "10px",
-            margin: "10px 20px",
-            borderRadius: "20px",
-            border: "1px solid #ccc",
-            outline: "none",
+          width: "calc(100% - 40px)",
+          padding: "10px",
+          margin: "10px 20px",
+          borderRadius: "20px",
+          border: "1px solid #ccc",
+          outline: "none",
         }}
-        />
-
-      <audio src={data} autoPlay controls style={{ width: "100%", margin: "10px 0" }} />
+      />
       
       <br />
       <div style={{ display: "flex", margin: "20px" }}>
