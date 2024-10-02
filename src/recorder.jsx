@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import phrasesData from "./data/phrases.json"; // Ensure the path is correct
 import MicIcon from "@mui/icons-material/Mic";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,7 +15,9 @@ const Recorder = () => {
   const [editableTranscript, setEditableTranscript] = useState("");
   const [conversation, setConversation] = useState([]);
   const [completedText, setCompletedText] = useState(""); // Add state to hold the completed text
+  const [randomPhrases, setRandomPhrases] = useState([]);
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   const handleDownloadAudio = async (text) => {
     try {
@@ -48,7 +51,28 @@ const Recorder = () => {
     }
   };
 
-  // Handle the user sending a message
+  // Handle the user sending a message by pressing Enter
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter" || event.key === "Return") {
+        handleSendMessage();
+      }
+    };
+
+    const inputElement = inputRef.current;
+    if (inputElement) {
+      inputElement.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      if (inputElement) {
+        inputElement.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, []);
+
+  // Function to handle sending a message
 
   const handleSendMessage = async () => {
     if (editableTranscript.trim() === "") return;
@@ -110,11 +134,25 @@ const Recorder = () => {
     setEditableTranscript(transcript);
   }, [transcript]);
 
+  // Function to handle button click
+  const handleButtonClick = (phrase) => {
+    setEditableTranscript((prev) => `${prev} ${phrase.spanish}`.trim()); // Append clicked phrase to textbox
+  };
+
   // Handle the user desiring to change the language
 
   const handleLanguageChange = (newLanguage) => {
     setLanguage(newLanguage);
   };
+
+  // pick 5 random phrases from the data
+
+  useEffect(() => {
+    const shuffledPhrases = [...phrasesData.common_phrases_spanish].sort(
+      () => 0.5 - Math.random()
+    );
+    setRandomPhrases(shuffledPhrases.slice(0, 5));
+  }, []);
 
   // Scroll to the bottom of the conversation
 
@@ -270,6 +308,7 @@ const Recorder = () => {
       />
       {/* Display the editable transcript */}
       <input
+        ref={inputRef}
         type="text"
         placeholder="Type your message here..."
         value={editableTranscript}
@@ -283,6 +322,32 @@ const Recorder = () => {
           outline: "none",
         }}
       />
+      {/* Just show the english version */}
+
+      {/* <p>{englishText}</p> Display the completed text */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          textAlign: "left",
+        }}
+      >
+        {randomPhrases.map((phrase, index) => (
+          <button
+            key={index}
+            className="btn btn-light" // Use Bootstrap button classes
+            style={{
+              marginRight: "20px",
+              marginTop: "10px",
+              whiteSpace: "nowrap",
+              fontSize: "11px",
+            }} // Margin for spacing
+            onClick={() => handleButtonClick(phrase)} // Call function on click
+          >
+            <strong>{phrase.spanish}</strong>
+          </button>
+        ))}
+      </div>
       <br />
       <div style={{ display: "flex", margin: "20px" }}>
         <button
@@ -301,10 +366,6 @@ const Recorder = () => {
         </button>
         <br />
       </div>
-      {/* Just show the english version */}
-      <br />
-      <p>{englishText}</p> {/* Display the completed text */}
-      <br />
     </div>
   );
 };
