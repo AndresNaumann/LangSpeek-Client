@@ -119,7 +119,7 @@ const Recorder = () => {
   // Scroll to the bottom of the conversation
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -154,7 +154,7 @@ const Recorder = () => {
       style={{
         display: "flex",
         flexDirection: "column",
-        width: "500px",
+        width: "700px",
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -232,7 +232,7 @@ const Recorder = () => {
                       borderRadius: "12px",
                       backgroundColor:
                         message.sender === "user" ? "#4c97a8" : "#e3e5e6",
-                        
+
                       color: message.sender === "user" ? "#f2f9fa" : "#070808",
                       textAlign: "left",
                       maxWidth: "60%",
@@ -266,7 +266,7 @@ const Recorder = () => {
         src={data}
         autoPlay
         controls
-        style={{ width: "100%", margin: "10px 0" }}
+        style={{ width: "50%", margin: "10px 0" }}
       />
       {/* Display the editable transcript */}
       <input
@@ -283,7 +283,6 @@ const Recorder = () => {
           outline: "none",
         }}
       />
-      
       <br />
       <div style={{ display: "flex", margin: "20px" }}>
         <button

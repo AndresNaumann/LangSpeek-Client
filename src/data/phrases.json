@@ -1,0 +1,84 @@
+{
+  "common_phrases_spanish": [
+    {
+      "spanish": "Hola, ¿cómo estás?",
+      "english": "Hello, how are you?"
+    },
+    {
+      "spanish": "¿Qué tal?",
+      "english": "How's it going?"
+    },
+    {
+      "spanish": "¿Cómo te ha ido?",
+      "english": "How have you been?"
+    },
+    {
+      "spanish": "¿Qué has estado haciendo?",
+      "english": "What have you been up to?"
+    },
+    {
+      "spanish": "Hace mucho que no te veo, ¿cómo has estado?",
+      "english": "I haven't seen you in a while, how have you been?"
+    },
+    {
+      "spanish": "¿Qué hay de nuevo?",
+      "english": "What's new?"
+    },
+    {
+      "spanish": "¿Cómo te sientes hoy?",
+      "english": "How are you feeling today?"
+    },
+    {
+      "spanish": "¿Cómo va todo?",
+      "english": "How's everything going?"
+    },
+    {
+      "spanish": "¿Qué me cuentas?",
+      "english": "What's going on with you?"
+    },
+    {
+      "spanish": "¿Cómo te ha ido últimamente?",
+      "english": "How have you been lately?"
+    },
+    {
+      "spanish": "¡Qué gusto verte!",
+      "english": "It's so nice to see you!"
+    },
+    {
+      "spanish": "¿Tienes planes para el fin de semana?",
+      "english": "Do you have any plans for the weekend?"
+    },
+    {
+      "spanish": "¿Qué tal tu día?",
+      "english": "How's your day going?"
+    },
+    {
+      "spanish": "¿Cómo estuvo tu fin de semana?",
+      "english": "How was your weekend?"
+    },
+    {
+      "spanish": "¿Cómo va el trabajo?",
+      "english": "How's work going?"
+    },
+    {
+      "spanish": "¿Has visto alguna buena película últimamente?",
+      "english": "Have you seen any good movies lately?"
+    },
+    {
+      "spanish": "¿Qué opinas del clima hoy?",
+      "english": "What do you think of the weather today?"
+    },
+    {
+      "spanish": "¿Te gustaría tomar un café un día de estos?",
+      "english": "Would you like to grab a coffee sometime?"
+    },
+    {
+      "spanish": "¿Tienes algo interesante que compartir?",
+      "english": "Do you have anything interesting to share?"
+    },
+    {
+      "spanish": "¿Qué te trae por aquí?",
+      "english": "What brings you here?"
+    }
+  ]
+}
