@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import phrasesData from "./data/phrases.json"; // Ensure the path is correct
+import phrasesData from "../data/phrases.json"; // Ensure the path is correct
 import MicIcon from "@mui/icons-material/Mic";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,6 +14,7 @@ const Recorder = () => {
   const [language, setLanguage] = useState("en"); // State to manage the language
   const [editableTranscript, setEditableTranscript] = useState("");
   const [conversation, setConversation] = useState([]);
+  // const [englishConversation, setEnglishConversation] = useState([]);
   const [completedText, setCompletedText] = useState(""); // Add state to hold the completed text
   const [randomPhrases, setRandomPhrases] = useState([]);
   const messagesEndRef = useRef(null);
@@ -51,11 +52,31 @@ const Recorder = () => {
     }
   };
 
+  // Function to handle sending a message
+
+  const handleSendMessage = async () => {
+    if (editableTranscript.trim() === "") return;
+
+    const userMessage = { text: editableTranscript, sender: "user" };
+
+    // Send the user's message to the server and get the bot's response
+    const botResponseText = await handleDownloadAudio(editableTranscript);
+
+    if (botResponseText) {
+      const botResponse = { text: botResponseText, sender: "bot" };
+      setConversation([...conversation, userMessage, botResponse]);
+      // setEnglishConversation([...englishConversation, englishText]);
+    }
+
+    setEditableTranscript("");
+    resetTranscript();
+  };
+
   // Handle the user sending a message by pressing Enter
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "Enter" || event.key === "Return") {
+      if (event.code === "Enter" || event.code === "Return") {
         handleSendMessage();
       }
     };
@@ -71,25 +92,6 @@ const Recorder = () => {
       }
     };
   }, []);
-
-  // Function to handle sending a message
-
-  const handleSendMessage = async () => {
-    if (editableTranscript.trim() === "") return;
-
-    const userMessage = { text: editableTranscript, sender: "user" };
-
-    // Send the user's message to the server and get the bot's response
-    const botResponseText = await handleDownloadAudio(editableTranscript);
-
-    if (botResponseText) {
-      const botResponse = { text: botResponseText, sender: "bot" };
-      setConversation([...conversation, userMessage, botResponse]);
-    }
-
-    setEditableTranscript("");
-    resetTranscript();
-  };
 
   // Verbal commands to delete the transcript
 
@@ -145,6 +147,20 @@ const Recorder = () => {
     setLanguage(newLanguage);
   };
 
+  // Handle the user desiring to see the English translation and switch back
+
+  const handleShowEnglish = (index) => {
+    const updatedConversation = [...conversation];
+    updatedConversation[index].text = englishText;
+    setConversation(updatedConversation); // Assuming you have a state to store the conversation
+  };
+
+  const handleShowOriginal = (index) => {
+    const updatedConversation = [...conversation];
+    updatedConversation[index].text = completedText;
+    setConversation(updatedConversation); // Assuming you have a state to store the conversation
+  };
+
   // pick 5 random phrases from the data
 
   useEffect(() => {
@@ -195,6 +211,7 @@ const Recorder = () => {
         width: "700px",
         justifyContent: "center",
         alignItems: "center",
+        maxhiehgt: "10vh",
       }}
     >
       <style>
@@ -241,7 +258,7 @@ const Recorder = () => {
         <div
           style={{
             width: "100%",
-            maxHeight: "400px",
+            maxHeight: "300px",
             overflowY: "auto",
             border: "1px solid #ccc",
             padding: "10px",
@@ -270,7 +287,6 @@ const Recorder = () => {
                       borderRadius: "12px",
                       backgroundColor:
                         message.sender === "user" ? "#4c97a8" : "#e3e5e6",
-
                       color: message.sender === "user" ? "#f2f9fa" : "#070808",
                       textAlign: "left",
                       maxWidth: "60%",
@@ -279,10 +295,45 @@ const Recorder = () => {
                     }}
                   >
                     {message.text}
+                    <br style={{ margin: "40px" }}></br>
+                    {message.sender !== "user" && (
+                      <button
+                        onClick={() => handleShowEnglish(index)} // Function to change text
+                        style={{
+                          marginLeft: "10px",
+                          fontSize: "8px",
+                          backgroundColor: "transparent",
+                          border: "none",
+                          color: "#007bff",
+                          cursor: "pointer",
+                          animation: "growIn 0.3s ease forwards",
+                        }}
+                      >
+                        English
+                      </button>
+                    )}
+
+                    {message.sender !== "user" && (
+                      <button
+                        onClick={() => handleShowOriginal(index)} // Function to change text
+                        style={{
+                          marginLeft: "10px",
+                          fontSize: "8px",
+                          backgroundColor: "transparent",
+                          border: "none",
+                          color: "#007bff",
+                          cursor: "pointer",
+                          animation: "growIn 0.3s ease forwards",
+                        }}
+                      >
+                        Original
+                      </button>
+                    )}
                   </span>
                 </div>
               )
           )}
+
           <div ref={messagesEndRef} />
         </div>
       )}
