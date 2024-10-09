@@ -28,6 +28,9 @@ function Navigation() {
             <Nav.Link as={Link} to="/contact">
               Contact
             </Nav.Link>
+            <Nav.Link as={Link} to="/admin">
+              Admin
+            </Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item as={Link} to="/action1">
                 Action
