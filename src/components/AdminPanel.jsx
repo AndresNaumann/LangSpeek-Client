@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const AdminPanel = () => {
   const [students, setStudents] = useState(["John Doe", "Jane Smith"]);
