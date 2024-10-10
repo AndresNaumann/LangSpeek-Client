@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../firebase"; // Import Firestore instance
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
@@ -14,11 +16,30 @@ function SignUp() {
   const handleSignUp = (e) => {
     e.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        navigate("/login"); // Redirect to login after successful signup
+      .then(async (userCredential) => {
+        const user = userCredential.user;
+
+        // Try storing user info and role in Firestore
+        try {
+          await setDoc(doc(db, "users", user.uid), {
+            email: user.email,
+            role: "user", // Set default role as 'user'
+          });
+          console.log("User role stored successfully");
+        } catch (firestoreError) {
+          console.error(
+            "Error storing user role in Firestore:",
+            firestoreError
+          );
+          setError("Failed to store user data. Please try again.");
+        }
+
+        // Redirect to login even if Firestore fails (but log error)
+        navigate("/login");
       })
       .catch((error) => {
-        setError(error.message);
+        setError(error.message); // Handle auth errors
+        console.error("Error signing up:", error);
       });
   };
 
@@ -49,7 +70,7 @@ function SignUp() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-20">
+            <Button variant="primary" type="submit" className="w-100">
               Sign Up
             </Button>
           </Form>

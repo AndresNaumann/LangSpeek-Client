@@ -1,26 +1,61 @@
-// src/components/ProtectedRoute.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
-import { auth } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase"; // Import Firestore instance
 
 const ProtectedRoute = ({ element: Component, requiredRole, ...rest }) => {
+  const [userRole, setUserRole] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const auth = getAuth();
   const user = auth.currentUser;
 
-  // You can fetch roles from Firestore or other methods based on your setup
-  // Assuming `user.role` for role checking
-  const userHasRequiredRole = user && user.role === requiredRole;
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user) {
+        try {
+          // Fetch the user document from Firestore
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            // Set the role from the fetched document
+            setUserRole(docSnap.data().role);
+          } else {
+            console.error("No such user document!");
+            setError("No role found for user.");
+          }
+        } catch (err) {
+          console.error("Error fetching user role:", err);
+          setError("Error fetching user role.");
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUserRole();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div>
+        <div style={{ margin: "20px" }}>Authenticating User...</div>
+      </div>
+    ); // Display a loading state while fetching role
+  }
 
   if (!user) {
     // If the user is not authenticated, redirect to login
     return <Navigate to="/login" />;
   }
 
-  if (!userHasRequiredRole) {
-    // If the user doesn't have the required role, redirect to a forbidden or dashboard
-    return <Navigate to="/forbidden" />; // Or wherever you want
+  if (error || userRole !== requiredRole) {
+    // If the user doesn't have the required role, redirect to forbidden
+    return <Navigate to="/forbidden" />;
   }
 
+  // Render the protected component if user has the required role
   return <Component {...rest} />;
 };
 

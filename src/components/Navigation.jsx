@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -13,6 +14,7 @@ import { getAuth, signOut } from "firebase/auth"; // Import Firebase auth
 function Navigation() {
   const [user, setUser] = useState(null);
   const auth = getAuth();
+  const navigate = useNavigate();
 
   // Listen for changes in the user's authentication state
   useEffect(() => {
@@ -27,6 +29,7 @@ function Navigation() {
     signOut(auth)
       .then(() => {
         setUser(null); // Clear user state after logout
+        navigate("/login"); // Redirect to login page after logout
       })
       .catch((error) => {
         console.error("Error signing out:", error);

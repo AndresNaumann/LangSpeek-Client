@@ -20,7 +20,10 @@ function App() {
         <Navigation />
         <Routes>
           <Route path="/landing" element={<Landing />} />{" "}
-          <Route path="/chat" element={<Chat />} />{" "}
+          <Route
+            path="/chat"
+            element={<ProtectedRoute element={Chat} requiredRole="user" />}
+          />{" "}
           <Route path="/about" element={<About />} />{" "}
           {/* <Route path="/admin" element={<Admin />} />{" "} */}
           <Route path="/login" element={<Login />} />{" "}
