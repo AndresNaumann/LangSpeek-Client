@@ -6,20 +6,37 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
-import { getAuth, signOut } from "firebase/auth"; // Import Firebase auth
+import { getAuth, signOut, onAuthStateChanged  } from "firebase/auth"; // Import Firebase auth
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 // This is the Navigation component which is displayed at the top of every page in the website.
 // Any edits made to the Navigation bar should be implemented here.
 
 function Navigation() {
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
   const auth = getAuth();
   const navigate = useNavigate();
 
   // Listen for changes in the user's authentication state
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser); // Set the user state when authentication state changes
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser); // Set the user state when authentication state changes
+        // Fetch user role from Firestore
+        const userRef = doc(db, "users", currentUser.uid); // Adjust the collection name if necessary
+        const userDoc = await getDoc(userRef);
+        
+        if (userDoc.exists()) {
+          setRole(userDoc.data().role); // Set the user role from Firestore
+        } else {
+          console.log("No user document found!");
+        }
+      } else {
+        setUser(null);
+        setRole(null); // Clear the role if no user is logged in
+      }
     });
 
     return () => unsubscribe(); // Clean up the listener on unmount
@@ -54,15 +71,24 @@ function Navigation() {
             <Nav.Link as={Link} to="/contact">
               Contact
             </Nav.Link>
-            <Nav.Link as={Link} to="/admin">
-              Admin
-            </Nav.Link>
+            {user && role == "user" && ( // Properly check if user exists and their role
+              <Nav.Link as={Link} to="/joinclass">
+                Join a Classroom
+              </Nav.Link>
+            )}
+            {user && role == "admin" && ( // Properly check if user exists and their role
+              <Nav.Link as={Link} to="/admin">
+                Admin
+              </Nav.Link>
+            )}
+            
           </Nav>
 
           <Nav className="ml-auto">
             {user ? (
-              <>
+              <>          
                 {/* If user is logged in, show the Logout button */}
+                <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
                 <Button variant="outline-danger" onClick={handleLogout}>
                   Logout
                 </Button>

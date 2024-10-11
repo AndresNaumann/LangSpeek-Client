@@ -10,37 +10,37 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
   const auth = getAuth();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        const user = userCredential.user;
+    setLoading(true); // Optional: Add loading state
 
-        // Try storing user info and role in Firestore
-        try {
-          await setDoc(doc(db, "users", user.uid), {
-            email: user.email,
-            role: "user", // Set default role as 'user'
-          });
-          console.log("User role stored successfully");
-        } catch (firestoreError) {
-          console.error(
-            "Error storing user role in Firestore:",
-            firestoreError
-          );
-          setError("Failed to store user data. Please try again.");
-        }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-        // Redirect to login even if Firestore fails (but log error)
-        navigate("/login");
-      })
-      .catch((error) => {
-        setError(error.message); // Handle auth errors
-        console.error("Error signing up:", error);
+      await setDoc(doc(db, "users", user.uid), {
+        course: "",
+        email: user.email,
+        instructor_id: "",
+        name: "",
+        role: "user", 
       });
+
+      console.log("User data stored successfully");
+      console.log("Navigating to /login");
+
+      navigate("/login");
+      setLoading(false); // Optional: End loading state
+    } catch (error) {
+      console.error("Error during sign-up:", error);
+      setError("Failed to complete sign-up. Please try again.");
+      setLoading(false); // Optional: End loading state
+    }
   };
 
   return (
@@ -70,7 +70,7 @@ function SignUp() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" className="w-100">
+            <Button variant="primary" type="submit" className="w-20">
               Sign Up
             </Button>
           </Form>

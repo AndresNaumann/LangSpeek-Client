@@ -1,10 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { db } from "../firebase"; // Adjust the path as necessary
+
 
 const AdminPanel = () => {
-  const [students, setStudents] = useState(["John Doe", "Jane Smith"]);
-  const [lessons, setLessons] = useState(["Math", "Science"]);
+  const [students, setStudents] = useState([]);
+  const [lessons, setLessons] = useState([]);
+  const [error, setError] = useState(null); // Optional: for handling errors
+  const [success, setSuccess] = useState(null); // Optional: for success messages
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const q = query(collection(db, "users"), where("role", "==", "student"));
+        const querySnapshot = await getDocs(q);
+        const studentsList = querySnapshot.docs.map(doc => ({
+          id: doc.id, // uid
+          ...doc.data() // contains other properties
+        }));
+        setStudents(studentsList);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
 
   const addStudent = () => {
     const newStudent = prompt("Enter student name:");
@@ -13,9 +36,23 @@ const AdminPanel = () => {
     }
   };
 
-  const removeStudent = (index) => {
-    const newStudents = students.filter((_, i) => i !== index);
-    setStudents(newStudents);
+
+  const handleRemoveStudent = async (id) => {
+    try {
+      await deleteDoc(doc(db, "users", id)); // Delete the student document
+      setSuccess("Student removed successfully!"); // Set success message
+
+      // Optionally fetch students again to update the list
+      const updatedStudents = await getDocs(query(collection(db, "users"), where("role", "==", "student")));
+      const studentsList = updatedStudents.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setStudents(studentsList);
+    } catch (error) {
+      console.error("Error removing student:", error);
+      setError("Failed to remove student.");
+    }
   };
 
   const handleFileUpload = (event) => {
@@ -33,7 +70,7 @@ const AdminPanel = () => {
   return (
     <div className="container mt-5">
       <ul className="nav nav-tabs" id="adminTab" role="tablist">
-        <li className="nav-item" role="presentation">
+        <li className="nav-item" role="presentation"> 
           <button
             className="nav-link active"
             id="students-tab"
@@ -71,16 +108,16 @@ const AdminPanel = () => {
         >
           <h2 className="mt-3">Students</h2>
           <ul className="list-group">
-            {students.map((student, index) => (
+            {students.map(student => (
               <li
-                key={index}
+                key={student.id} // Use student ID as the key
                 className="list-group-item d-flex justify-content-between align-items-center"
               >
-                {student}
+                {student.name} {/* Display student name */}Student ID: {student.id}
                 <div>
                   <button
                     className="btn btn-danger btn-sm me-2"
-                    onClick={() => removeStudent(index)}
+                    onClick={() => handleRemoveStudent(student.id)} // Remove student by ID
                   >
                     Remove
                   </button>

@@ -1,8 +1,10 @@
 import React from "react";
+
 import AdminPanel from "../components/AdminPanel";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Admin = () => {
+
   return (
     <div className="container mt-5">
       <div className="row">

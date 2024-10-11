@@ -25,5 +25,5 @@ export const useAuth = () => {
     return await signOut(auth);
   };
 
-  return { user, login, logout };
+  return { user, login, logout }; // Return the user object and login/logout functions
 };

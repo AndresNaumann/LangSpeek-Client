@@ -35,50 +35,21 @@
     {
       "spanish": "¿Qué me cuentas?",
       "english": "What's going on with you?"
+    }
+  ],
+
+  "help": [
+    {
+      "spanish": "No entiendo",
+      "english": "I don't understand"
     },
     {
-      "spanish": "¿Cómo te ha ido últimamente?",
-      "english": "How have you been lately?"
+      "spanish": "¿Puedes repetirlo, por favor?",
+      "english": "Can you repeat that, please?"
     },
     {
-      "spanish": "¡Qué gusto verte!",
-      "english": "It's so nice to see you!"
-    },
-    {
-      "spanish": "¿Tienes planes para el fin de semana?",
-      "english": "Do you have any plans for the weekend?"
-    },
-    {
-      "spanish": "¿Qué tal tu día?",
-      "english": "How's your day going?"
-    },
-    {
-      "spanish": "¿Cómo estuvo tu fin de semana?",
-      "english": "How was your weekend?"
-    },
-    {
-      "spanish": "¿Cómo va el trabajo?",
-      "english": "How's work going?"
-    },
-    {
-      "spanish": "¿Has visto alguna buena película últimamente?",
-      "english": "Have you seen any good movies lately?"
-    },
-    {
-      "spanish": "¿Qué opinas del clima hoy?",
-      "english": "What do you think of the weather today?"
-    },
-    {
-      "spanish": "¿Te gustaría tomar un café un día de estos?",
-      "english": "Would you like to grab a coffee sometime?"
-    },
-    {
-      "spanish": "¿Tienes algo interesante que compartir?",
-      "english": "Do you have anything interesting to share?"
-    },
-    {
-      "spanish": "¿Qué te trae por aquí?",
-      "english": "What brings you here?"
+      "spanish": "Que significa eso?",
+      "english": "What does that mean?"
     }
   ]
 }
