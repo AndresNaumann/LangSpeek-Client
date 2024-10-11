@@ -12,6 +12,7 @@ import About from "./pages/about";
 import Admin from "./pages/admin";
 import Profile from "./pages/Profile";
 import JoinClass from "./pages/JoinClass";
+import Classroom from "./pages/Classroom";
 
 // Components
 import Login from "./components/Login";
@@ -53,17 +54,18 @@ function App() {
           <Route path="/landing" element={<Landing />} />{" "}
           <Route
             path="/chat"
-            element={<ProtectedRoute element={Chat} requiredRole={"admin"}/>}
+            element={<ProtectedRoute element={Chat} requiredRoles={["admin", "student"]}/>}
           />{" "}
           <Route path="/about" element={<About />} />{" "}
           <Route path="/login" element={<Login />} />{" "}
           <Route path="/signup" element={<SignUp />} />{" "}
           <Route path="/profile" element={<Profile />} />{" "}
           <Route path="/joinclass" element={<JoinClass />} />{" "}
+          <Route path="/classroom" element={<Classroom />} />{" "}
           <Route path="/" element={<Landing />} />{" "}
           <Route
             path="/admin"
-            element={<ProtectedRoute element={Admin} requiredRole="admin" />}
+            element={<ProtectedRoute element={Admin} requiredRoles={["admin"]} />}
           />
         </Routes>
       </>

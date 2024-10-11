@@ -1,0 +1,59 @@
+{
+"common_phrases_finnish": [
+    {
+        "finnish": "Hei, miten menee?",
+        "english": "Hi, how's it going?"
+    },
+    {
+        "finnish": "Mikä sinun nimesi on?",
+        "english": "What's your name?"
+    },
+    {
+        "finnish": "Mistä olet kotoisin?",
+        "english": "Where are you from?"
+    },
+    {
+        "finnish": "Mitä teet työksesi?",
+        "english": "What do you do for a living?"
+    },
+    {
+        "finnish": "Pidätkö urheilusta?",
+        "english": "Do you like sports?"
+    },
+    {
+        "finnish": "Mikä on lempiruokasi?",
+        "english": "What's your favorite food?"
+    },
+    {
+        "finnish": "Onko sinulla sisaruksia?",
+        "english": "Do you have siblings?"
+    },
+    {
+        "finnish": "Mitä harrastat?",
+        "english": "What are your hobbies?"
+    },
+    {
+        "finnish": "Oletko matkustanut paljon?",
+        "english": "Have you traveled a lot?"
+    }
+],
+
+"help": [
+    {
+        "finnish": "Voitko toistaa?",
+        "english": "Can you repeat?"
+    },
+    {
+        "finnish": "En ymmärrä.",
+        "english": "I don't understand."
+    },
+    {
+        "finnish": "Voitko puhua hitaammin?",
+        "english": "Can you speak more slowly?"
+    },
+    {
+        "finnish": "Mitä tämä tarkoittaa?",
+        "english": "What does this mean?"
+    }
+]
+}

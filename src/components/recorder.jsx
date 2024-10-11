@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import phrasesData from "../data/phrases.json"; // Ensure the path is correct
+import phrasesEsData from "../data/phrases_es.json";
+import phrasesFiData from "../data/phrases_fi.json";
 import MicIcon from "@mui/icons-material/Mic";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -164,11 +165,19 @@ const Recorder = () => {
   // pick 5 random phrases from the data
 
   useEffect(() => {
-    const shuffledPhrases = [...phrasesData.common_phrases_spanish].sort(
+    let selectedPhrases = [];
+
+    if (language === "es-MX") {
+      selectedPhrases = phrasesEsData && phrasesEsData.common_phrases_spanish;
+    } else if (language === "fi") {
+      selectedPhrases = phrasesFiData && phrasesFiData.common_phrases_finnish;
+    }
+
+    const shuffledPhrases = [...selectedPhrases].sort(
       () => 0.5 - Math.random()
     );
     setRandomPhrases(shuffledPhrases.slice(0, 5));
-  }, []);
+  }, [language]);
 
   // Scroll to the bottom of the conversation
 
@@ -395,7 +404,7 @@ const Recorder = () => {
             }} // Margin for spacing
             onClick={() => handleButtonClick(phrase)} // Call function on click
           >
-            <strong>{phrase.spanish}</strong>
+            <strong>{language === 'spanish' ? phrase.spanish : phrase.finnish}</strong>
           </button>
         ))}
       </div>

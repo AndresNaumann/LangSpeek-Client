@@ -71,12 +71,17 @@ function Navigation() {
             <Nav.Link as={Link} to="/contact">
               Contact
             </Nav.Link>
-            {user && role == "user" && ( // Properly check if user exists and their role
+            {user && role === "user" && (
               <Nav.Link as={Link} to="/joinclass">
                 Join a Classroom
               </Nav.Link>
             )}
-            {user && role == "admin" && ( // Properly check if user exists and their role
+            {user && role === "student" || role === "admin" && (
+              <Nav.Link as={Link} to="/classroom">
+                My Class
+              </Nav.Link>
+            )}
+            {user && role === "admin" && (
               <Nav.Link as={Link} to="/admin">
                 Admin
               </Nav.Link>

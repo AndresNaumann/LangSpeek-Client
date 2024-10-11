@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase"; // Import Firestore instance
 
-const ProtectedRoute = ({ element: Component, requiredRole, ...rest }) => {
+const ProtectedRoute = ({ element: Component, requiredRoles, ...rest }) => {
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,7 +50,7 @@ const ProtectedRoute = ({ element: Component, requiredRole, ...rest }) => {
     return <Navigate to="/login" />;
   }
 
-  if (error || userRole !== requiredRole) {
+  if (!requiredRoles.includes(userRole)) {
     // If the user doesn't have the required role, redirect to forbidden
     return <Navigate to="/forbidden" />;
   }
