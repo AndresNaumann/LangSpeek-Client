@@ -16,6 +16,7 @@ import { db } from "../firebase";
 function Navigation() {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
+  const [name, setName] = useState(null);
   const auth = getAuth();
   const navigate = useNavigate();
 
@@ -30,12 +31,14 @@ function Navigation() {
         
         if (userDoc.exists()) {
           setRole(userDoc.data().role); // Set the user role from Firestore
+          setName(userDoc.data().name);
         } else {
           console.log("No user document found!");
         }
       } else {
         setUser(null);
         setRole(null); // Clear the role if no user is logged in
+        setName(null);
       }
     });
 
@@ -71,12 +74,13 @@ function Navigation() {
             <Nav.Link as={Link} to="/contact">
               Contact
             </Nav.Link>
+            
             {user && role === "user" && (
               <Nav.Link as={Link} to="/joinclass">
                 Join a Classroom
               </Nav.Link>
             )}
-            {user && role === "student" || role === "admin" && (
+            {user && (role === "student" || role === "admin") && (
               <Nav.Link as={Link} to="/classroom">
                 My Class
               </Nav.Link>
@@ -93,7 +97,7 @@ function Navigation() {
             {user ? (
               <>          
                 {/* If user is logged in, show the Logout button */}
-                <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+                <Nav.Link as={Link} to="/profile">Hello, {name}</Nav.Link>
                 <Button variant="outline-danger" onClick={handleLogout}>
                   Logout
                 </Button>

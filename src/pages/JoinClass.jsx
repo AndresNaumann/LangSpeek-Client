@@ -44,6 +44,7 @@ const JoinClass = () => {
 
                 const userRef = doc(db, 'users', user.uid); // Get the user document reference
                 await updateDoc(userRef, { role: 'student' }); // Update the user role to student
+                await updateDoc(userRef, {course: classCode });
 
                 setMessage('Successfully joined the class!');
                 navigate('/'); // Redirect to home page after joining

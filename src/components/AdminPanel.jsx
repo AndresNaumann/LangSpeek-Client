@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, deleteDoc, updateDoc, arrayRemove, doc } from "firebase/firestore";
 import { db } from "../firebase"; // Adjust the path as necessary
 
 
@@ -10,6 +10,7 @@ const AdminPanel = () => {
   const [lessons, setLessons] = useState([]);
   const [error, setError] = useState(null); // Optional: for handling errors
   const [success, setSuccess] = useState(null); // Optional: for success messages
+  const [classData, setClassData] = useState(null);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -35,6 +36,27 @@ const AdminPanel = () => {
       setStudents([...students, newStudent]);
     }
   };
+
+  // const handleRemoveStudent = async (studentId, classId) => {
+  //   try {
+  //     // Reference to the specific class document
+  //     const classRef = doc(db, "classes", classId);
+  
+  //     // Update the class document by removing the student's ID from the "students" array
+  //     await updateDoc(classRef, {
+  //       students: arrayRemove(studentId),
+  //     });
+  
+  //     setSuccess("Student removed from class successfully!");
+  
+  //     // Optionally, fetch the updated class data to refresh the UI
+  //     const updatedClass = await getDoc(classRef);
+  //     setClassData(updatedClass.data());
+  //   } catch (error) {
+  //     console.error("Error removing student from class:", error);
+  //     setError("Failed to remove student from class.");
+  //   }
+  // };
 
 
   const handleRemoveStudent = async (id) => {
