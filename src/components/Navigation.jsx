@@ -68,6 +68,7 @@ function Navigation() {
             <Nav.Link as={Link} to="/chat">
               Chat
             </Nav.Link>
+            
             <Nav.Link as={Link} to="/about">
               About
             </Nav.Link>
@@ -80,7 +81,7 @@ function Navigation() {
                 Join a Classroom
               </Nav.Link>
             )}
-            {user && (role === "student" || role === "admin") && (
+            {user && (role === "student") && (
               <Nav.Link as={Link} to="/classroom">
                 My Class
               </Nav.Link>

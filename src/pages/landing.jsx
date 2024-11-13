@@ -3,8 +3,14 @@ import React from "react";
 const Landing = () => {
   return (
     <div className="container-fluid p-0">
-      <header className="bg-dark text-white text-center py-5">
-        <h1 className="display-4">Become IMRSD</h1>
+      <header className="bg-dark text-white text-center py-5 relative">
+        <img 
+          src="/LogoWhite.png"
+          alt="Language Learning"
+          style={{ height: '70px', width: 'auto' }}
+          className="mx-auto mb-4 h-10 w-auto"
+        />
+        {/* <h1 className="display-4">Become IMRSD</h1> */}
         <p className="lead">Your gateway to mastering new languages</p>
         <a href="#features" className="btn btn-primary btn-lg mt-3">
           Learn More

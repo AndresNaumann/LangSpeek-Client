@@ -111,7 +111,8 @@ const Profile = () => {
                     <p className="card-text"><strong>Email:</strong> {userData.email}</p>
                     <p className="card-text"><strong>Phone:</strong> {userData.phone}</p>
                     <p className="card-text"><strong>Address:</strong> {userData.address}</p>
-                    <Button variant="primary" onClick={handleShowEditModal}>
+                    <Button variant="primary" onClick={handleShowEditModal}
+                    style={{marginRight: "10px"}}>
                         Edit
                     </Button>
                     <Button variant="danger" onClick={handleDeleteAccount}>

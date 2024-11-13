@@ -13,6 +13,7 @@ import Admin from "./pages/admin";
 import Profile from "./pages/Profile";
 import JoinClass from "./pages/JoinClass";
 import Classroom from "./pages/Classroom";
+import CreateLesson from "./pages/CreateLesson";
 
 // Components
 import Login from "./components/Login";
@@ -62,6 +63,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />{" "}
           <Route path="/joinclass" element={<JoinClass />} />{" "}
           <Route path="/classroom" element={<Classroom />} />{" "}
+          <Route path="/create-lesson" element={<CreateLesson />} />{" "}
+          <Route path="/edit-lesson" element={<CreateLesson />} />{" "}
           <Route path="/" element={<Landing />} />{" "}
           <Route
             path="/admin"

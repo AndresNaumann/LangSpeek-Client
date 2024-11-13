@@ -1,0 +1,111 @@
+{
+    "common_phrases": [
+      {
+        "english": "Hi, how's it going?",
+        "german": "Hallo, wie geht's?",
+        "french": "Salut, comment ça va ?",
+        "russian": "Привет, как дела?",
+        "chinese": "你好，最近怎么样？",
+        "finnish": "Hei, miten menee?"
+      },
+      {
+        "english": "What's your name?",
+        "german": "Wie heißt du?",
+        "french": "Comment tu t'appelles ?",
+        "russian": "Как тебя зовут?",
+        "chinese": "你叫什么名字？",
+        "finnish": "Mikä sinun nimesi on?"
+      },
+      {
+        "english": "Where are you from?",
+        "german": "Woher kommst du?",
+        "french": "D'où viens-tu ?",
+        "russian": "Откуда ты?",
+        "chinese": "你来自哪里？",
+        "finnish": "Mistä olet kotoisin?"
+      },
+      {
+        "english": "What do you do for a living?",
+        "german": "Was machst du beruflich?",
+        "french": "Que fais-tu dans la vie ?",
+        "russian": "Чем ты занимаешься?",
+        "chinese": "你做什么工作？",
+        "finnish": "Mitä teet työksesi?"
+      },
+      {
+        "english": "Do you like sports?",
+        "german": "Magst du Sport?",
+        "french": "Tu aimes le sport ?",
+        "russian": "Ты любишь спорт?",
+        "chinese": "你喜欢运动吗？",
+        "finnish": "Pidätkö urheilusta?"
+      },
+      {
+        "english": "What's your favorite food?",
+        "german": "Was ist dein Lieblingsessen?",
+        "french": "Quel est ton plat préféré ?",
+        "russian": "Какое твоё любимое блюдо?",
+        "chinese": "你最喜欢的食物是什么？",
+        "finnish": "Mikä on lempiruokasi?"
+      },
+      {
+        "english": "Do you have siblings?",
+        "german": "Hast du Geschwister?",
+        "french": "As-tu des frères et sœurs ?",
+        "russian": "У тебя есть братья и сестры?",
+        "chinese": "你有兄弟姐妹吗？",
+        "finnish": "Onko sinulla sisaruksia?"
+      },
+      {
+        "english": "What are your hobbies?",
+        "german": "Was sind deine Hobbys?",
+        "french": "Qu'est-ce que tu fais comme loisirs ?",
+        "russian": "Какие у тебя хобби?",
+        "chinese": "你的爱好是什么？",
+        "finnish": "Mitä harrastat?"
+      },
+      {
+        "english": "Have you traveled a lot?",
+        "german": "Bist du viel gereist?",
+        "french": "As-tu beaucoup voyagé ?",
+        "russian": "Ты много путешествовал?",
+        "chinese": "你旅行多吗？",
+        "finnish": "Oletko matkustanut paljon?"
+      }
+    ],
+    "help": [
+      {
+        "english": "Can you repeat?",
+        "german": "Kannst du das wiederholen?",
+        "french": "Peux-tu répéter ?",
+        "russian": "Ты можешь повторить?",
+        "chinese": "你能重复一下吗？",
+        "finnish": "Voitko toistaa?"
+      },
+      {
+        "english": "I don't understand.",
+        "german": "Ich verstehe nicht.",
+        "french": "Je ne comprends pas.",
+        "russian": "Я не понимаю.",
+        "chinese": "我不明白。",
+        "finnish": "En ymmärrä."
+      },
+      {
+        "english": "Can you speak more slowly?",
+        "german": "Kannst du langsamer sprechen?",
+        "french": "Peux-tu parler plus lentement ?",
+        "russian": "Можешь говорить помедленнее?",
+        "chinese": "你能说慢点吗？",
+        "finnish": "Voitko puhua hitaammin?"
+      },
+      {
+        "english": "What does this mean?",
+        "german": "Was bedeutet das?",
+        "french": "Que signifie cela ?",
+        "russian": "Что это значит?",
+        "chinese": "这是什么意思？",
+        "finnish": "Mitä tämä tarkoittaa?"
+      }
+    ]
+  }
+  
