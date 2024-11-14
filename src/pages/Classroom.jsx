@@ -27,12 +27,14 @@ const Classroom = () => {
   const [classroomData, setClassroomData] = useState(null);
   const [lessons, setLessons] = useState([]);
 
+  const auth = getAuth();
+
+
   // First, Acquire the student information
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const auth = getAuth(); // Get the auth instance
         const currentUser = auth.currentUser; // Get the current user
 
         if (currentUser) {
@@ -91,6 +93,7 @@ const Classroom = () => {
           const lessonsData = querySnapshot.docs.map((doc) => doc.data());
           setLessons(lessonsData);
         } else {
+          console.log(instructorId);
           console.log("No lessons found for this instructor.");
         }
       } catch (error) {

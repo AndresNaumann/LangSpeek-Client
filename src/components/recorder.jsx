@@ -19,6 +19,7 @@ const Recorder = () => {
   const [randomPhrases, setRandomPhrases] = useState([]);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const [showDictionary, setShowDictionary] = useState(false);
 
   const handleDownloadAudio = async (text) => {
     try {
@@ -69,7 +70,7 @@ const Recorder = () => {
   }, [transcript]);
 
   useEffect(() => {
-    setRandomPhrases((language === "es-MX" ? phrasesEsData.common_phrases_spanish : phrasesFiData.common_phrases_finnish || []).slice(0, 5));
+    setRandomPhrases((language === "es-MX" ? phrasesEsData.common_phrases_spanish : phrasesFiData.common_phrases_finnish || []).slice(0, 4));
   }, [language]);
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -80,66 +81,109 @@ const Recorder = () => {
   const handleShowEnglish = (index) => {
     const updatedConversation = [...conversation];
     updatedConversation[index].text = englishText;
-    setConversation(updatedConversation); // Assuming you have a state to store the conversation
+    setConversation(updatedConversation);
   };
 
   const handleShowOriginal = (index) => {
     const updatedConversation = [...conversation];
     updatedConversation[index].text = completedText;
-    setConversation(updatedConversation); // Assuming you have a state to store the conversation
+    setConversation(updatedConversation);
   };
 
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
-    <div className="container d-flex justify-content-center p-4">
+    <div className="container d-flex justify-content-center p-4" style={{ position: 'relative' }}>
       <div className="w-200" style={{ maxWidth: "800px" }}>
-        <div className="d-flex align-items-center mb-2">
-          <MicIcon className="me-2" />
-          <p className="m-0">Listening in</p>
-          <select className="form-select ms-3" onChange={handleLanguageChange}>
-            <option value="en">English</option>
-            <option value="es-MX">Spanish</option>
-            <option value="fr-FR">French</option>
-            <option value="de-DE">German</option>
-            <option value="fi">Finnish</option>
-          </select>
+        
+        {/* Toggle Dictionary Button */}
+        <button
+          className="btn btn-secondary mb-3"
+          style={{ position: 'fixed', top: '70px', right: '1rem', zIndex: 1000 }} // Adjust 'top' to match the navbar height
+          onClick={() => setShowDictionary(!showDictionary)}
+        >
+          Dictionary
+        </button>
+
+        {/* Dictionary Sidebar */}
+        <div
+          className={`dictionary-sidebar ${showDictionary ? 'show' : ''}`}
+          style={{
+            position: 'fixed',
+            top: '70px', // Adjust top offset to match the navbar height
+            right: '0',
+            height: 'calc(100% - 70px)', // Subtract the navbar height from the sidebar height
+            width: '250px',
+            backgroundColor: 'white',
+            boxShadow: '-2px 0 5px rgba(0, 0, 0, 0.3)',
+            padding: '1rem',
+            overflowY: 'auto',
+            transition: 'transform 0.3s ease-in-out',
+            transform: showDictionary ? 'translateX(0)' : 'translateX(100%)',
+            zIndex: 999,
+          }}
+        >
+          <h5>Dictionary</h5>
+          <ul className="list-unstyled">
+            <li><strong>Hola</strong>: Hello</li>
+            <li><strong>Buenas Tardes</strong>: Good Afternoon</li>
+            <li><strong>Que te vayas bien</strong>: Have a good journey</li>
+          </ul>
         </div>
-        <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
-          {conversation.map((message, index) => (
-            <div key={index} className={`d-flex ${message.sender === "user" ? "justify-content-end" : ""}`}>
-              <span className={`p-2 rounded ${message.sender === "user" ? "bg-primary text-white" : "bg-light text-dark"}`} style={{ maxWidth: "75%", wordWrap: "break-word" }}>
-                {message.text}
-                {message.sender === "bot" && (
-                  <>
-                    <button className="btn btn-link btn-sm p-0 ms-2" onClick={() => handleShowEnglish(index)}>English</button>
-                    <button className="btn btn-link btn-sm p-0 ms-2" onClick={() => handleShowOriginal(index)}>Original</button>
-                  </>
-                )}
-              </span>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-        <audio src={data} autoPlay controls className="w-100 mb-3" />
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Type your message here..."
-          value={editableTranscript}
-          onChange={(e) => setEditableTranscript(e.target.value)}
-          className="form-control mb-3"
-        />
-        <div className="d-flex gap-2 flex-wrap mb-3">
-          {randomPhrases.map((phrase, index) => (
-            <button key={index} className="btn btn-light btn-sm" onClick={() => setEditableTranscript((prev) => `${prev} ${phrase.spanish}`.trim())}>
-              <strong>{language === 'es-MX' ? phrase.spanish : phrase.finnish}</strong>
-            </button>
-          ))}
-        </div>
-        <div className="d-flex justify-content-between">
-          <button className="btn btn-primary" onClick={handleSendMessage}>Send</button>
-          <button className="btn btn-danger" onClick={resetTranscript}>Clear</button>
+
+        {/* Main Content */}
+        <div>
+          <div className="d-flex align-items-center mb-4">
+            <MicIcon className="me-4" />
+            <p className="m-0">Listening in</p>
+            <select className="form-select ms-4" onChange={handleLanguageChange} style={{ maxWidth: "120px" }}>
+              <option value="en">English</option>
+              <option value="es-MX">Spanish</option>
+              <option value="fr-FR">French</option>
+              <option value="de-DE">German</option>
+              <option value="fi">Finnish</option>
+            </select>
+          </div>
+          
+          <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
+            {conversation.map((message, index) => (
+              <div key={index} className={`d-flex ${message.sender === "user" ? "justify-content-end" : ""}`}>
+                <span className={`p-2 rounded ${message.sender === "user" ? "bg-primary text-white" : "bg-light text-dark"}`} style={{ maxWidth: "75%", wordWrap: "break-word" }}>
+                  {message.text}
+                  {message.sender === "bot" && (
+                    <>
+                      <button className="btn btn-link btn-sm p-0 ms-2" onClick={() => handleShowEnglish(index)}>English</button>
+                      <button className="btn btn-link btn-sm p-0 ms-2" onClick={() => handleShowOriginal(index)}>Original</button>
+                    </>
+                  )}
+                </span>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <audio src={data} autoPlay controls className="w-100 mb-3" />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Type your message here..."
+            value={editableTranscript}
+            onChange={(e) => setEditableTranscript(e.target.value)}
+            className="form-control mb-3"
+          />
+
+          <div className="d-flex gap-2 flex-wrap mb-3">
+            {randomPhrases.map((phrase, index) => (
+              <button key={index} className="btn btn-light btn-sm" onClick={() => setEditableTranscript((prev) => `${prev} ${phrase.spanish}`.trim())}>
+                <strong>{language === 'es-MX' ? phrase.spanish : phrase.finnish}</strong>
+              </button>
+            ))}
+          </div>
+
+          <div className="d-flex justify-content-between">
+            <button className="btn btn-primary" onClick={handleSendMessage}>Send</button>
+            <button className="btn btn-danger" onClick={resetTranscript}>Clear</button>
+          </div>
         </div>
       </div>
     </div>

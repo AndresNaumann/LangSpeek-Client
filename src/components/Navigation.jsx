@@ -20,7 +20,7 @@ function Navigation() {
   const auth = getAuth();
   const navigate = useNavigate();
 
-  // Listen for changes in the user's authentication state
+  // CHANGE TO HANDLE AUTHENTICATION CHANGE
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
