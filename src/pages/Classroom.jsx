@@ -5,15 +5,15 @@ import {
   collection,
   getDoc,
   getDocs,
-  updateDoc,
   query,
   where,
   doc,
 } from "firebase/firestore"; // Firestore methods
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import Firebase Auth
 
 const Classroom = () => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [editData, setEditData] = useState({
     name: "",
@@ -29,14 +29,11 @@ const Classroom = () => {
 
   const auth = getAuth();
 
-
-  // First, Acquire the student information
+  ////ACQUIRE USER DATA
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserData = onAuthStateChanged(auth, async (currentUser) => {
       try {
-        const currentUser = auth.currentUser; // Get the current user
-
         if (currentUser) {
           const docRef = doc(db, "users", currentUser.uid); // Use current user's UID
           const docSnap = await getDoc(docRef);
@@ -57,10 +54,12 @@ const Classroom = () => {
       } finally {
         setLoading(false);
       }
-    };
+    });
 
-    fetchUserData();
+    return () => fetchUserData();
   }, []);
+
+  ////ACQUIRE CLASSROOM DATA
 
   useEffect(() => {
     const fetchClassroomData = async () => {
@@ -83,14 +82,25 @@ const Classroom = () => {
       }
     };
 
+    fetchClassroomData();
+  }, [classCode]); // Only run when classCode changes
+
+  ////ACQUIRE LESSON DATA
+
+  useEffect(() => {
     const fetchLessons = async () => {
+      if (!instructorId) return;
+
       try {
         const lessonRef = collection(db, "lessons");
         const q = query(lessonRef, where("lessonOwner", "==", instructorId));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          const lessonsData = querySnapshot.docs.map((doc) => doc.data());
+          const lessonsData = querySnapshot.docs.map((doc) => ({
+            uid: doc.id, // Include the document ID as uid
+            ...doc.data(), // Spread in the rest of the document data
+          }));
           setLessons(lessonsData);
         } else {
           console.log(instructorId);
@@ -101,9 +111,16 @@ const Classroom = () => {
       }
     };
 
-    fetchClassroomData();
     fetchLessons();
-  }, [classCode]); // Only run when classCode changes
+  }, [instructorId]);
+
+  //// START THE LESSON IF THE BUTTON IS CLICKED
+
+  const handleStartLesson = async (lesson) => {
+    navigate("/chat", { state: { lessonData: lesson } });
+  };
+
+  ///////////////////////////////////////////////////
 
   return (
     <div className="container mt-5">
@@ -141,7 +158,7 @@ const Classroom = () => {
           <div className="card-body">
             <div className="lessons-section mt-4">
               <h2 className="text-center mb-4">
-                Lessons for Instructor {classroomData?.instructor}
+                Lessons for Instructor {classroomData?.courseTitle}
               </h2>
               <div>
                 {lessons.map((lesson, index) => (
@@ -155,8 +172,11 @@ const Classroom = () => {
                           {lesson.description || "No description available."}
                         </p>
                       </div>
-                      <button className="btn btn-primary btn-sm">
-                        View Details
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => handleStartLesson(lesson)}
+                      >
+                        Start Lesson
                       </button>
                     </div>
                   </div>

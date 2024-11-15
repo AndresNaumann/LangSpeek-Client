@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore"; // Firestore methods
 import { db } from "../firebase"; // Import Firestore instance
 
 const ProtectedRoute = ({ element: Component, requiredRoles, ...rest }) => {
@@ -9,10 +9,9 @@ const ProtectedRoute = ({ element: Component, requiredRoles, ...rest }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const auth = getAuth();
-  const user = auth.currentUser;
 
   useEffect(() => {
-    const fetchUserRole = async () => {
+    const fetchUserRole = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
           // Fetch the user document from Firestore
@@ -22,6 +21,7 @@ const ProtectedRoute = ({ element: Component, requiredRoles, ...rest }) => {
           if (docSnap.exists()) {
             // Set the role from the fetched document
             setUserRole(docSnap.data().role);
+            console.log(docSnap.data().role);
           } else {
             console.error("No such user document!");
             setError("No role found for user.");
@@ -30,12 +30,15 @@ const ProtectedRoute = ({ element: Component, requiredRoles, ...rest }) => {
           console.error("Error fetching user role:", err);
           setError("Error fetching user role.");
         }
+      } else {
+        console.log("No user is currently logged in.");
+        setUserRole(null); // Clear userRole if no user is logged in
       }
       setLoading(false);
-    };
+    });
 
-    fetchUserRole();
-  }, [user]);
+    return () => fetchUserRole();
+  }, [auth]);
 
   if (loading) {
     return (
@@ -45,7 +48,7 @@ const ProtectedRoute = ({ element: Component, requiredRoles, ...rest }) => {
     ); // Display a loading state while fetching role
   }
 
-  if (!user) {
+  if (!auth.currentUser) {
     // If the user is not authenticated, redirect to login
     return <Navigate to="/login" />;
   }

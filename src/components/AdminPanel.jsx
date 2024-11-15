@@ -186,7 +186,7 @@ const AdminPanel = () => {
     }
   };
 
-  /////////////////////////////////////////////////////////////////////////////////////
+  //////////ADMIN DASHBOARD////////////////////////////////////////////////////////////
 
   return (
     <div className="container mt-5">
@@ -301,9 +301,6 @@ const AdminPanel = () => {
             </p>
           )}
           <br></br>
-
-          
-
           <button
             className="btn btn-primary mb-3"
             onClick={handleCreateNewLesson}

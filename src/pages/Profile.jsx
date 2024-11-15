@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { getAuth } from "firebase/auth"; // Import Firebase Auth
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import Firebase Auth
 import { db } from "../firebase"; // Adjust the path as necessary
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Form } from 'react-bootstrap';
@@ -11,14 +11,12 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editData, setEditData] = useState({ name: '', email: '', phone: '', address: '' });
+    const auth = getAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchUserData = onAuthStateChanged(auth, async (currentUser) => {
             try {
-                const auth = getAuth(); // Get the auth instance
-                const currentUser = auth.currentUser; // Get the current user
-
                 if (currentUser) {
                     const docRef = doc(db, 'users', currentUser.uid); // Use current user's UID
                     const docSnap = await getDoc(docRef);
@@ -37,9 +35,9 @@ const Profile = () => {
             } finally {
                 setLoading(false);
             }
-        };
+        });
 
-        fetchUserData();
+        return () => fetchUserData();
     }, []);
 
     const handleShowEditModal = () => {

@@ -22,7 +22,7 @@ function Navigation() {
 
   // CHANGE TO HANDLE AUTHENTICATION CHANGE
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const fetchUserData = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser); // Set the user state when authentication state changes
         // Fetch user role from Firestore
@@ -42,7 +42,7 @@ function Navigation() {
       }
     });
 
-    return () => unsubscribe(); // Clean up the listener on unmount
+    return () => fetchUserData(); // Clean up the listener on unmount
   }, [auth]);
 
   const handleLogout = () => {
