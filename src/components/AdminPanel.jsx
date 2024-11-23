@@ -92,6 +92,7 @@ const AdminPanel = () => {
       await setDoc(lessonRef, {
         lessonTitle: "New Lesson",
         description: "No description",
+        directions: "",
         difficulty: "No difficulty",
         lessonOwner: userId,
         createdAt: Date.now()

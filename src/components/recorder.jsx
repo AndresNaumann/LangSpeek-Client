@@ -13,7 +13,7 @@ const Recorder = ({ lessonData }) => {
   const [data, setData] = useState("");
   const [englishText, setEnglishText] = useState("");
   const [error, setError] = useState("");
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("es-MX");
   const [editableTranscript, setEditableTranscript] = useState("");
   const [conversation, setConversation] = useState([]);
   const [completedText, setCompletedText] = useState("");
@@ -125,6 +125,11 @@ const Recorder = ({ lessonData }) => {
     updatedConversation[index].text = completedText;
     setConversation(updatedConversation);
   };
+
+  const handleResetTextBox = () => {
+    resetTranscript();
+    setEditableTranscript("");
+  }
 
   const handleAddToDictionary = (word) => {
     setCustomDictionary([...customDictionary, word]);
@@ -321,7 +326,7 @@ const Recorder = ({ lessonData }) => {
             <button className="btn btn-primary" onClick={handleSendMessage}>
               Send
             </button>
-            <button className="btn btn-danger" onClick={() => setEditableTranscript("")}>
+            <button className="btn btn-danger" onClick={() => handleResetTextBox()}>
               Clear
             </button>
           </div>

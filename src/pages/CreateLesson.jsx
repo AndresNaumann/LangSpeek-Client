@@ -11,6 +11,7 @@ const CreateLesson = () => {
   const lessonId = searchParams.get("id");
   const [lessonTitle, setLessonTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [directions, setDirections] = useState("");
   const [duration, setDuration] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ const CreateLesson = () => {
           const data = lessonDoc.data();
           setLessonTitle(data.lessonTitle);
           setDescription(data.description);
+          setDirections(data.directions);
           setDifficulty(data.difficulty);
         }
       } catch (error) {
@@ -45,6 +47,7 @@ const CreateLesson = () => {
       await updateDoc(lessonRef, {
         lessonTitle,
         description,
+        directions,
         difficulty,
         updatedAt: Date.now()
       });
@@ -82,6 +85,18 @@ const CreateLesson = () => {
                 placeholder="Enter lesson description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formDirections">
+              <Form.Label>Directions</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Enter directions for the AI. For Example: Pretend to have a conversation where you learn the basics about eachother."
+                value={description}
+                onChange={(e) => setDirections(e.target.value)}
                 required
               />
             </Form.Group>
