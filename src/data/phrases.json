@@ -1,111 +1,159 @@
 {
-    "common_phrases": [
-      {
-        "english": "Hi, how's it going?",
-        "german": "Hallo, wie geht's?",
-        "french": "Salut, comment ça va ?",
-        "russian": "Привет, как дела?",
-        "chinese": "你好，最近怎么样？",
-        "finnish": "Hei, miten menee?"
-      },
-      {
-        "english": "What's your name?",
-        "german": "Wie heißt du?",
-        "french": "Comment tu t'appelles ?",
-        "russian": "Как тебя зовут?",
-        "chinese": "你叫什么名字？",
-        "finnish": "Mikä sinun nimesi on?"
-      },
-      {
-        "english": "Where are you from?",
-        "german": "Woher kommst du?",
-        "french": "D'où viens-tu ?",
-        "russian": "Откуда ты?",
-        "chinese": "你来自哪里？",
-        "finnish": "Mistä olet kotoisin?"
-      },
-      {
-        "english": "What do you do for a living?",
-        "german": "Was machst du beruflich?",
-        "french": "Que fais-tu dans la vie ?",
-        "russian": "Чем ты занимаешься?",
-        "chinese": "你做什么工作？",
-        "finnish": "Mitä teet työksesi?"
-      },
-      {
-        "english": "Do you like sports?",
-        "german": "Magst du Sport?",
-        "french": "Tu aimes le sport ?",
-        "russian": "Ты любишь спорт?",
-        "chinese": "你喜欢运动吗？",
-        "finnish": "Pidätkö urheilusta?"
-      },
-      {
-        "english": "What's your favorite food?",
-        "german": "Was ist dein Lieblingsessen?",
-        "french": "Quel est ton plat préféré ?",
-        "russian": "Какое твоё любимое блюдо?",
-        "chinese": "你最喜欢的食物是什么？",
-        "finnish": "Mikä on lempiruokasi?"
-      },
-      {
-        "english": "Do you have siblings?",
-        "german": "Hast du Geschwister?",
-        "french": "As-tu des frères et sœurs ?",
-        "russian": "У тебя есть братья и сестры?",
-        "chinese": "你有兄弟姐妹吗？",
-        "finnish": "Onko sinulla sisaruksia?"
-      },
-      {
-        "english": "What are your hobbies?",
-        "german": "Was sind deine Hobbys?",
-        "french": "Qu'est-ce que tu fais comme loisirs ?",
-        "russian": "Какие у тебя хобби?",
-        "chinese": "你的爱好是什么？",
-        "finnish": "Mitä harrastat?"
-      },
-      {
-        "english": "Have you traveled a lot?",
-        "german": "Bist du viel gereist?",
-        "french": "As-tu beaucoup voyagé ?",
-        "russian": "Ты много путешествовал?",
-        "chinese": "你旅行多吗？",
-        "finnish": "Oletko matkustanut paljon?"
-      }
-    ],
-    "help": [
-      {
-        "english": "Can you repeat?",
-        "german": "Kannst du das wiederholen?",
-        "french": "Peux-tu répéter ?",
-        "russian": "Ты можешь повторить?",
-        "chinese": "你能重复一下吗？",
-        "finnish": "Voitko toistaa?"
-      },
-      {
-        "english": "I don't understand.",
-        "german": "Ich verstehe nicht.",
-        "french": "Je ne comprends pas.",
-        "russian": "Я не понимаю.",
-        "chinese": "我不明白。",
-        "finnish": "En ymmärrä."
-      },
-      {
-        "english": "Can you speak more slowly?",
-        "german": "Kannst du langsamer sprechen?",
-        "french": "Peux-tu parler plus lentement ?",
-        "russian": "Можешь говорить помедленнее?",
-        "chinese": "你能说慢点吗？",
-        "finnish": "Voitko puhua hitaammin?"
-      },
-      {
-        "english": "What does this mean?",
-        "german": "Was bedeutet das?",
-        "french": "Que signifie cela ?",
-        "russian": "Что это значит?",
-        "chinese": "这是什么意思？",
-        "finnish": "Mitä tämä tarkoittaa?"
-      }
-    ]
-  }
-  
+  "common_phrases": [
+    {
+      "en-US": "Hi, how's it going?",
+      "de-DE": "Hallo, wie geht's?",
+      "fr-FR": "Salut, comment ça va ?",
+      "ru": "Привет, как дела?",
+      "zh-CN": "你好，最近怎么样？",
+      "fi": "Hei, miten menee?",
+      "es-MX": "Hola, ¿cómo te va?"
+    },
+    {
+      "en-US": "What's your name?",
+      "de-DE": "Wie heißt du?",
+      "fr-FR": "Comment tu t'appelles ?",
+      "ru": "Как тебя зовут?",
+      "zh-CN": "你叫什么名字？",
+      "fi": "Mikä sinun nimesi on?",
+      "es-MX": "¿Cómo te llamas?"
+    },
+    {
+      "en-US": "Where are you from?",
+      "de-DE": "Woher kommst du?",
+      "fr-FR": "D'où viens-tu ?",
+      "ru": "Откуда ты?",
+      "zh-CN": "你来自哪里？",
+      "fi": "Mistä olet kotoisin?",
+      "es-MX": "¿De dónde eres?"
+    },
+    {
+      "en-US": "What do you do for a living?",
+      "de-DE": "Was machst du beruflich?",
+      "fr-FR": "Que fais-tu dans la vie ?",
+      "ru": "Чем ты занимаешься?",
+      "zh-CN": "你做什么工作？",
+      "fi": "Mitä teet työksesi?",
+      "es-MX": "¿A qué te dedicas?"
+    },
+    {
+      "en-US": "Do you like sports?",
+      "de-DE": "Magst du Sport?",
+      "fr-FR": "Tu aimes le sport ?",
+      "ru": "Ты любишь спорт?",
+      "zh-CN": "你喜欢运动吗？",
+      "fi": "Pidätkö urheilusta?",
+      "es-MX": "¿Te gustan los deportes?"
+    },
+    {
+      "en-US": "What's your favorite food?",
+      "de-DE": "Was ist dein Lieblingsessen?",
+      "fr-FR": "Quel est ton plat préféré ?",
+      "ru": "Какое твоё любимое блюдо?",
+      "zh-CN": "你最喜欢的食物是什么？",
+      "fi": "Mikä on lempiruokasi?",
+      "es-MX": "¿Cuál es tu comida favorita?"
+    },
+    {
+      "en-US": "Do you have siblings?",
+      "de-DE": "Hast du Geschwister?",
+      "fr-FR": "As-tu des frères et sœurs ?",
+      "ru": "У тебя есть братья и сестры?",
+      "zh-CN": "你有兄弟姐妹吗？",
+      "fi": "Onko sinulla sisaruksia?",
+      "es-MX": "¿Tienes hermanos?"
+    },
+    {
+      "en-US": "What are your hobbies?",
+      "de-DE": "Was sind deine Hobbys?",
+      "fr-FR": "Qu'est-ce que tu fais comme loisirs ?",
+      "ru": "Какие у тебя хобби?",
+      "zh-CN": "你的爱好是什么？",
+      "fi": "Mitä harrastat?",
+      "es-MX": "¿Cuáles son tus pasatiempos?"
+    },
+    {
+      "en-US": "Have you traveled a lot?",
+      "de-DE": "Bist du viel gereist?",
+      "fr-FR": "As-tu beaucoup voyagé ?",
+      "ru": "Ты много путешествовал?",
+      "zh-CN": "你旅行多吗？",
+      "fi": "Oletko matkustanut paljon?",
+      "es-MX": "¿Has viajado mucho?"
+    }
+  ],
+  "help": [
+    {
+      "en-US": "Can you repeat?",
+      "de-DE": "Kannst du das wiederholen?",
+      "fr-FR": "Peux-tu répéter ?",
+      "ru": "Ты можешь повторить?",
+      "zh-CN": "你能重复一下吗？",
+      "fi": "Voitko toistaa?",
+      "es-MX": "¿Puedes repetir?"
+    },
+    {
+      "en-US": "I don't understand.",
+      "de-DE": "Ich verstehe nicht.",
+      "fr-FR": "Je ne comprends pas.",
+      "ru": "Я не понимаю.",
+      "zh-CN": "我不明白。",
+      "fi": "En ymmärrä.",
+      "es-MX": "No entiendo."
+    },
+    {
+      "en-US": "Please speak slowly.",
+      "de-DE": "Bitte sprich langsam.",
+      "fr-FR": "Parle lentement, s'il te plaît.",
+      "ru": "Пожалуйста, говорите медленно.",
+      "zh-CN": "请说慢一点。",
+      "fi": "Puhu hitaasti, kiitos.",
+      "es-MX": "Por favor, habla despacio."
+    },
+    {
+      "en-US": "How much does it cost?",
+      "de-DE": "Wie viel kostet das?",
+      "fr-FR": "Combien ça coûte ?",
+      "ru": "Сколько это стоит?",
+      "zh-CN": "这个多少钱？",
+      "fi": "Paljonko tämä maksaa?",
+      "es-MX": "¿Cuánto cuesta?"
+    },
+    {
+      "en-US": "Where is the bathroom?",
+      "de-DE": "Wo ist die Toilette?",
+      "fr-FR": "Où sont les toilettes ?",
+      "ru": "Где находится туалет?",
+      "zh-CN": "洗手间在哪里？",
+      "fi": "Missä on vessa?",
+      "es-MX": "¿Dónde está el baño?"
+    },
+    {
+      "en-US": "Can you help me?",
+      "de-DE": "Kannst du mir helfen?",
+      "fr-FR": "Peux-tu m'aider ?",
+      "ru": "Ты можешь мне помочь?",
+      "zh-CN": "你能帮我吗？",
+      "fi": "Voitko auttaa minua?",
+      "es-MX": "¿Puedes ayudarme?"
+    },
+    {
+      "en-US": "I need a doctor.",
+      "de-DE": "Ich brauche einen Arzt.",
+      "fr-FR": "J'ai besoin d'un médecin.",
+      "ru": "Мне нужен врач.",
+      "zh-CN": "我需要医生。",
+      "fi": "Tarvitsen lääkärin.",
+      "es-MX": "Necesito un doctor."
+    },
+    {
+      "en-US": "I'm lost.",
+      "de-DE": "Ich bin verloren.",
+      "fr-FR": "Je suis perdu.",
+      "ru": "Я потерялся.",
+      "zh-CN": "我迷路了。",
+      "fi": "Olen eksynyt.",
+      "es-MX": "Estoy perdido."
+    }
+  ]
+}

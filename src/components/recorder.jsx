@@ -4,8 +4,12 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import phrasesEsData from "../data/phrases_es.json";
 import phrasesFiData from "../data/phrases_fi.json";
+import phrasesData from "../data/phrases.json";
 import MicIcon from "@mui/icons-material/Mic";
 import axios from "axios";
+import { getAuth } from "firebase/auth";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { OverlayTrigger, Popover, Button } from "react-bootstrap";
 
@@ -13,26 +17,32 @@ const Recorder = ({ lessonData }) => {
   const [data, setData] = useState("");
   const [englishText, setEnglishText] = useState("");
   const [error, setError] = useState("");
-  const [language, setLanguage] = useState("es-MX");
+  const [language, setLanguage] = useState("en-US");
   const [editableTranscript, setEditableTranscript] = useState("");
   const [conversation, setConversation] = useState([]);
   const [completedText, setCompletedText] = useState("");
   const [randomPhrases, setRandomPhrases] = useState([]);
   const [customDictionary, setCustomDictionary] = useState([]);
+  const [showEnglishIndex, setShowEnglishIndex] = useState(null);
+  const [showOriginalIndex, setShowOriginalIndex] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const [showDictionary, setShowDictionary] = useState(false);
+  const [conversationStarted, setConversationStarted] = useState(null);
+
+  const auth = getAuth();
 
   //// HANDLE DOWNLOAD ////
 
   const handleDownloadAudio = async (text, lessonData) => {
+
     try {
       let response = await axios.post(
         "http://localhost:4000/",
-        { 
-          text, 
+        {
+          text,
           translation: englishText,
-          lessonData: lessonData || null,  
+          lessonData: lessonData || null,
         },
         { responseType: "json" }
       );
@@ -49,6 +59,7 @@ const Recorder = ({ lessonData }) => {
       setData(URL.createObjectURL(audioBlob));
       setCompletedText(response.data.text);
       setEnglishText(response.data.translation);
+      //console.log(cUser.uid); // this works
       return response.data.text;
     } catch (error) {
       console.error("Error downloading audio:", error);
@@ -61,18 +72,71 @@ const Recorder = ({ lessonData }) => {
 
   const handleSendMessage = async () => {
     if (!editableTranscript.trim()) return;
-    const userMessage = { text: editableTranscript, sender: "user" };
+
+    const currentUser = auth.currentUser;
+    const lessonId = lessonData ? lessonData.uid : "Open Chat";
+
     const botResponseText = await handleDownloadAudio(editableTranscript, lessonData);
-    if (botResponseText) {
-      setConversation([
-        ...conversation,
-        userMessage,
-        { text: botResponseText, sender: "bot" },
-      ]);
+
+    if (lessonData && lessonData.uid) {
+      lessonId = lessonData.uid;
+      //console.log(lessonData.uid);
     }
-    setEditableTranscript("");
-    resetTranscript();
+
+    try {
+      // Ensure the conversation document exists
+      let conversationId = conversationStarted;
+
+      if (!conversationStarted) {
+        const conversationDoc = await addDoc(collection(db, "conversations"), {
+          startTime: serverTimestamp(),
+          userId: currentUser.uid,
+          lessonId: lessonId
+        });
+
+        conversationId = conversationDoc.id; // Get the conversation UID
+        setConversationStarted(conversationId); // Store it to avoid recreating
+      }
+
+      // Add the user message
+      const userMessageDoc = await addDoc(collection(db, "messages"), {
+        text: editableTranscript,
+        sender: "user",
+        userId: currentUser.uid,
+        conversationId, // Link to the conversation
+        lessonId: lessonId,
+        timestamp: serverTimestamp(),
+      });
+
+      const userMessage = { text: editableTranscript, sender: "user", translation: "", original: editableTranscript };
+
+      setConversation(prevConversation => [...prevConversation, userMessage]);
+
+      // Add the bot message if it exists
+      if (botResponseText) {
+        await addDoc(collection(db, "messages"), {
+          text: botResponseText,
+          sender: "bot",
+          userId: currentUser.uid,
+          conversationId, // Link to the conversation
+          lessonId: lessonId,
+          timestamp: serverTimestamp(),
+        });
+
+        const botMessage = { text: botResponseText, sender: "bot", translation: englishText, original: botResponseText };
+
+        setConversation(prevConversation => [...prevConversation, botMessage]);
+
+      }
+
+      setEditableTranscript("");
+      resetTranscript();
+    } catch (error) {
+      console.error("Error handling messages:", error);
+    }
   };
+
+  //// IMPLEMENT SPEECH RECOGNITION
 
   const {
     transcript,
@@ -95,35 +159,47 @@ const Recorder = ({ lessonData }) => {
     }
   }, [browserSupportsSpeechRecognition, language]);
 
+  // Set the editableTranscript variable to update when ever the user types or says anything
+
   useEffect(() => {
     setEditableTranscript(transcript);
   }, [transcript]);
 
+  // Set the suggestions to update when ever the language changes
+
   useEffect(() => {
-    setRandomPhrases(
-      (language === "es-MX"
-        ? phrasesEsData.common_phrases_spanish
-        : phrasesFiData.common_phrases_finnish || []
-      ).slice(0, 4)
-    );
+    const phrases = phrasesData.common_phrases.map(phrase => phrase[language]);
+    const selectedPhrases = phrases.sort(() => 0.5 - Math.random()).slice(0, 3);
+    setRandomPhrases(selectedPhrases);
   }, [language]);
+
+  //Make the conversation scroll the bottom when ever a new message is added.
 
   const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(() => scrollToBottom(), [conversation]);
 
+  // Handle the language when the user selects a different language from the drop down
+
   const handleLanguageChange = (e) => setLanguage(e.target.value);
 
+  // Display the english translation or original text
+
   const handleShowEnglish = (index) => {
-    const updatedConversation = [...conversation];
-    updatedConversation[index].text = englishText;
-    setConversation(updatedConversation);
+    // const updatedConversation = [...conversation];
+    // updatedConversation[index].text = englishText;
+    // setConversation(updatedConversation);
+
+    setShowEnglishIndex(index);
+    setShowOriginalIndex(null); // Hide original text when showing English translation
   };
 
   const handleShowOriginal = (index) => {
-    const updatedConversation = [...conversation];
-    updatedConversation[index].text = completedText;
-    setConversation(updatedConversation);
+    // const updatedConversation = [...conversation];
+    // updatedConversation[index].text = completedText;
+    // setConversation(updatedConversation);
+    setShowEnglishIndex(index);
+    setShowOriginalIndex(null); // Hide original text when showing English translation
   };
 
   const handleResetTextBox = () => {
@@ -153,7 +229,7 @@ const Recorder = ({ lessonData }) => {
       style={{ position: "relative" }}
     >
       <div className="w-200" style={{ maxWidth: "800px" }}>
-        
+
         {/* Dictionary Sidebar */}
         <button
           className="btn mb-3"
@@ -230,10 +306,11 @@ const Recorder = ({ lessonData }) => {
             <p className="m-0">Listening in</p>
             <select
               className="form-select ms-4"
+              value={language}
               onChange={handleLanguageChange}
               style={{ maxWidth: "120px" }}
             >
-              <option value="en">English</option>
+              <option value="en-US">English</option>
               <option value="es-MX">Spanish</option>
               <option value="fr-FR">French</option>
               <option value="de-DE">German</option>
@@ -241,51 +318,25 @@ const Recorder = ({ lessonData }) => {
             </select>
           </div>
 
-          <div
-            className="conversation-container border rounded p-3 mb-3"
-            style={{ maxHeight: "300px", overflowY: "auto" }}
-          >
+          <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
             {conversation.map((message, index) => (
-              <div
-                key={index}
-                className={`d-flex ${
-                  message.sender === "user" ? "justify-content-end" : ""
-                }`}
-              >
-                <span
-                  className={`p-2 rounded ${
-                    message.sender === "user"
-                      ? "bg-primary text-white"
-                      : "bg-light text-dark"
-                  }`}
-                  style={{ maxWidth: "75%", wordWrap: "break-word" }}
-                >
-                  {message.text.split(" ").map((word, i) => (
-                    <OverlayTrigger
-                      key={i}
-                      trigger="click"
-                      placement="top"
-                      overlay={renderWordPopover(word)}
-                    >
-                      <span className="mx-1" style={{ cursor: "pointer" }}>
-                        {word}
-                      </span>
-                    </OverlayTrigger>
-                  ))}
+              <div key={index} className={`d-flex ${message.sender === "user" ? "justify-content-end" : ""}`}>
+                <span className={`p-2 rounded ${message.sender === "user" ? "bg-primary text-white" : "bg-light text-dark"}`} style={{ maxWidth: "75%", wordWrap: "break-word" }}>
+                  {message.text}
+
                   {message.sender === "bot" && (
                     <>
-                      <button
-                        className="btn btn-link btn-sm p-0 ms-2"
-                        onClick={() => handleShowEnglish(index)}
-                      >
-                        English
-                      </button>
-                      <button
-                        className="btn btn-link btn-sm p-0 ms-2"
-                        onClick={() => handleShowOriginal(index)}
-                      >
-                        Original
-                      </button>
+                      <button className="btn btn-link btn-sm p-0 ms-2" onClick={() => handleShowEnglish(index)}><small>な</small></button>
+                      {showEnglishIndex === index && (
+                        <div className="mt-2">
+                          <strong>English:</strong> {message.translation}
+                        </div>
+                      )}
+                      {/* {showOriginalIndex === index && (
+                        <div className="mt-2">
+                          <strong>Original:</strong> {message.original}
+                        </div>
+                      )} */}
                     </>
                   )}
                 </span>
@@ -308,16 +359,10 @@ const Recorder = ({ lessonData }) => {
             {randomPhrases.map((phrase, index) => (
               <button
                 key={index}
-                className="btn btn-light btn-sm"
-                onClick={() =>
-                  setEditableTranscript((prev) =>
-                    `${prev} ${phrase.spanish}`.trim()
-                  )
-                }
-              >
-                <strong>
-                  {language === "es-MX" ? phrase.spanish : phrase.finnish}
-                </strong>
+                className="btn btn-secondary"
+                onClick={() => setEditableTranscript((prev) => `${prev} ${phrase}`.trim())}>
+
+                {phrase}
               </button>
             ))}
           </div>

@@ -8,9 +8,12 @@ import {
   query,
   where,
   doc,
+  updateDoc,
+  arrayUnion,
 } from "firebase/firestore"; // Firestore methods
 import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import Firebase Auth
+import { ToastContainer, toast } from "react-toastify";
 
 const Classroom = () => {
   const navigate = useNavigate();
@@ -117,7 +120,18 @@ const Classroom = () => {
   //// START THE LESSON IF THE BUTTON IS CLICKED
 
   const handleStartLesson = async (lesson) => {
+    const currentUser = auth.currentUser;
+    // Reference to the specific lesson document
+    const lessonRef = doc(db, 'lessons', lesson.uid);
+
+    // Update the lesson document to add user's ID to 'takenBy' array
+    await updateDoc(lessonRef, {
+      takenBy: arrayUnion(currentUser.uid)
+    });
+
+    // Navigate to chat with lesson data
     navigate("/chat", { state: { lessonData: lesson } });
+
   };
 
   ///////////////////////////////////////////////////

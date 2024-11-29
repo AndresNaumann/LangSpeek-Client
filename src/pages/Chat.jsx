@@ -13,6 +13,21 @@ const Chat = () => {
     const location = useLocation();
     const { lessonData } = location.state || {};
 
+    //// WARN THE USER NOT TO LEAVE
+
+    useEffect(() => {
+      const handleBeforeUnload = (e) => {
+        e.preventDefault();
+        e.returnValue = ''; // Display browser's default warning message
+      };
+    
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }, []); // Empty dependency array means this runs once on component mount
+
     //// ACQUIRE USER INFORMATION
 
     useEffect(() => {

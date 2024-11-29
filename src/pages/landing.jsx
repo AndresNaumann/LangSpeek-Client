@@ -1,7 +1,9 @@
 import React from "react";
+import Footer from "../components/Footer"
 
 const Landing = () => {
   return (
+    <>
     <div className="container-fluid p-0">
       <header className="bg-dark text-white text-center py-5 relative">
         <img 
@@ -16,7 +18,7 @@ const Landing = () => {
           Learn More
         </a>
       </header>
-      <section id="features" className="py-5">
+      <section id="features" className="py-5" style={{marginBottom: "21vh"}}>
         <div className="container">
           <div className="row">
             <div className="col-md-4">
@@ -46,10 +48,12 @@ const Landing = () => {
           </div>
         </div>
       </section>
-      <footer className="bg-dark text-white text-center py-3">
+      {/* <footer className="bg-dark text-white text-center py-3">
         <p className="mb-0">&copy; 2023 LangSpeek. All rights reserved.</p>
-      </footer>
+      </footer> */}
     </div>
+    <Footer/>
+    </>
   );
 };
 export default Landing;

@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
-import { getAuth, signOut, onAuthStateChanged  } from "firebase/auth"; // Import Firebase auth
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth"; // Import Firebase auth
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -28,7 +28,7 @@ function Navigation() {
         // Fetch user role from Firestore
         const userRef = doc(db, "users", currentUser.uid); // Adjust the collection name if necessary
         const userDoc = await getDoc(userRef);
-        
+
         if (userDoc.exists()) {
           setRole(userDoc.data().role); // Set the user role from Firestore
           setName(userDoc.data().name);
@@ -68,14 +68,12 @@ function Navigation() {
             <Nav.Link as={Link} to="/chat">
               Chat
             </Nav.Link>
-            
             <Nav.Link as={Link} to="/about">
               About
             </Nav.Link>
             <Nav.Link as={Link} to="/contact">
               Contact
             </Nav.Link>
-            
             {user && role === "user" && (
               <Nav.Link as={Link} to="/joinclass">
                 Join a Classroom
@@ -91,12 +89,16 @@ function Navigation() {
                 Admin
               </Nav.Link>
             )}
-            
-          </Nav>
 
+            {user && (
+              <Nav.Link as={Link} to="/chathistory">
+                Chat History
+              </Nav.Link>
+            )}
+          </Nav>
           <Nav className="ml-auto">
             {user ? (
-              <>          
+              <>
                 {/* If user is logged in, show the Logout button */}
                 <Nav.Link as={Link} to="/profile">Hello, {name}</Nav.Link>
                 <Button variant="outline-danger" onClick={handleLogout}>
@@ -117,7 +119,7 @@ function Navigation() {
           </Nav>
         </Navbar.Collapse>
       </Container>
-    </Navbar>
+    </Navbar >
   );
 }
 

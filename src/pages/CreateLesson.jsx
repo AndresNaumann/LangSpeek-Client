@@ -95,7 +95,7 @@ const CreateLesson = () => {
                 as="textarea"
                 rows={3}
                 placeholder="Enter directions for the AI. For Example: Pretend to have a conversation where you learn the basics about eachother."
-                value={description}
+                value={directions}
                 onChange={(e) => setDirections(e.target.value)}
                 required
               />

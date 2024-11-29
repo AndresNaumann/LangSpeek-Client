@@ -91,10 +91,11 @@ const AdminPanel = () => {
       // Create the lesson with default values
       await setDoc(lessonRef, {
         lessonTitle: "New Lesson",
+        lessonOwner: userId,
         description: "No description",
         directions: "",
-        difficulty: "No difficulty",
-        lessonOwner: userId,
+        difficulty: "0",
+        takenBy: [],
         createdAt: Date.now()
       });
   

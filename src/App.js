@@ -14,6 +14,9 @@ import Profile from "./pages/Profile";
 import JoinClass from "./pages/JoinClass";
 import Classroom from "./pages/Classroom";
 import CreateLesson from "./pages/CreateLesson";
+import Contact from "./pages/Contact"
+import ChatHistory from "./pages/ChatHistory";
+import Messages from "./pages/Messages";
 
 // Components
 import Login from "./components/Login";
@@ -58,13 +61,16 @@ function App() {
             element={<ProtectedRoute element={Chat} requiredRoles={["admin", "student"]}/>}
           />{" "}
           <Route path="/about" element={<About />} />{" "}
+          <Route path="/contact" element={<Contact />} />{" "}
           <Route path="/login" element={<Login />} />{" "}
           <Route path="/signup" element={<SignUp />} />{" "}
           <Route path="/profile" element={<Profile />} />{" "}
           <Route path="/joinclass" element={<JoinClass />} />{" "}
           <Route path="/classroom" element={<Classroom />} />{" "}
+          <Route path="/chathistory" element={<ChatHistory />} />{" "}
           <Route path="/create-lesson" element={<CreateLesson />} />{" "}
           <Route path="/edit-lesson" element={<CreateLesson />} />{" "}
+          <Route path="/messages/:conversationId" element={<Messages/>} />{" "}
           <Route path="/" element={<Landing />} />{" "}
           <Route
             path="/admin"
