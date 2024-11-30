@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; // Import Firestore functions
+import { doc, setDoc, addDoc, serverTimestamp, collection } from "firebase/firestore"; // Import Firestore functions
 import { db } from "../firebase"; // Import Firestore instance
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
@@ -28,7 +28,14 @@ function SignUp() {
         email: user.email,
         instructor_id: "",
         name: "",
-        role: "user", 
+        role: "user",
+        nativeLanguage: "",
+        openChatDefaultLearningLanguage: ""
+      });
+
+      await addDoc(collection(db, "dictionaries"), {
+        userId: user.uid,
+        timestamp: serverTimestamp(),
       });
 
       console.log("User data stored successfully");

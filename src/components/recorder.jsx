@@ -8,12 +8,14 @@ import phrasesData from "../data/phrases.json";
 import MicIcon from "@mui/icons-material/Mic";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { OverlayTrigger, Popover, Button } from "react-bootstrap";
 
 const Recorder = ({ lessonData }) => {
+
+  // console.log(userNativeLanguage);
   const [data, setData] = useState("");
   const [englishText, setEnglishText] = useState("");
   const [error, setError] = useState("");
@@ -25,12 +27,29 @@ const Recorder = ({ lessonData }) => {
   const [customDictionary, setCustomDictionary] = useState([]);
   const [showEnglishIndex, setShowEnglishIndex] = useState(null);
   const [showOriginalIndex, setShowOriginalIndex] = useState(null);
+  const [hoveredPhraseIndex, setHoveredPhraseIndex] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const [showDictionary, setShowDictionary] = useState(false);
   const [conversationStarted, setConversationStarted] = useState(null);
 
   const auth = getAuth();
+
+  useEffect(() => {
+    const fetchUserLanguage = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setLanguage(userData.openChatDefaultLearningLanguage || "en-US");
+        }
+      }
+    };
+
+    fetchUserLanguage();
+  }, [auth]);
 
   //// HANDLE DOWNLOAD ////
 
@@ -59,8 +78,7 @@ const Recorder = ({ lessonData }) => {
       setData(URL.createObjectURL(audioBlob));
       setCompletedText(response.data.text);
       setEnglishText(response.data.translation);
-      //console.log(cUser.uid); // this works
-      return response.data.text;
+      return response.data;
     } catch (error) {
       console.error("Error downloading audio:", error);
       setError("Failed to download audio.");
@@ -76,12 +94,10 @@ const Recorder = ({ lessonData }) => {
     const currentUser = auth.currentUser;
     const lessonId = lessonData ? lessonData.uid : "Open Chat";
 
-    const botResponseText = await handleDownloadAudio(editableTranscript, lessonData);
+    const botResponseData = await handleDownloadAudio(editableTranscript, lessonData);
 
-    if (lessonData && lessonData.uid) {
-      lessonId = lessonData.uid;
-      //console.log(lessonData.uid);
-    }
+    const userMessage = { text: editableTranscript, sender: "user", translation: "", original: editableTranscript };
+    const botMessage = { text: botResponseData.text, sender: "bot", translation: botResponseData.translation, original: botResponseData.text };
 
     try {
       // Ensure the conversation document exists
@@ -98,6 +114,7 @@ const Recorder = ({ lessonData }) => {
         setConversationStarted(conversationId); // Store it to avoid recreating
       }
 
+
       // Add the user message
       const userMessageDoc = await addDoc(collection(db, "messages"), {
         text: editableTranscript,
@@ -108,14 +125,10 @@ const Recorder = ({ lessonData }) => {
         timestamp: serverTimestamp(),
       });
 
-      const userMessage = { text: editableTranscript, sender: "user", translation: "", original: editableTranscript };
-
-      setConversation(prevConversation => [...prevConversation, userMessage]);
-
       // Add the bot message if it exists
-      if (botResponseText) {
+      if (botMessage) {
         await addDoc(collection(db, "messages"), {
-          text: botResponseText,
+          text: botResponseData.text,
           sender: "bot",
           userId: currentUser.uid,
           conversationId, // Link to the conversation
@@ -123,11 +136,16 @@ const Recorder = ({ lessonData }) => {
           timestamp: serverTimestamp(),
         });
 
-        const botMessage = { text: botResponseText, sender: "bot", translation: englishText, original: botResponseText };
-
-        setConversation(prevConversation => [...prevConversation, botMessage]);
-
+        setConversation(prevConversation => [
+          ...prevConversation,
+          userMessage,
+          ...(botMessage ? [botMessage] : [])
+        ]);
       }
+
+      const phrases = phrasesData.common_phrases.map(phrase => phrase[language]);
+      const selectedPhrases = phrases.sort(() => 0.5 - Math.random()).slice(0, 3);
+      setRandomPhrases(selectedPhrases);
 
       setEditableTranscript("");
       resetTranscript();
@@ -185,14 +203,14 @@ const Recorder = ({ lessonData }) => {
 
   // Display the english translation or original text
 
-  const handleShowEnglish = (index) => {
-    // const updatedConversation = [...conversation];
-    // updatedConversation[index].text = englishText;
-    // setConversation(updatedConversation);
+  // const handleShowEnglish = (index) => {
+  //   // const updatedConversation = [...conversation];
+  //   // updatedConversation[index].text = englishText;
+  //   // setConversation(updatedConversation);
 
-    setShowEnglishIndex(index);
-    setShowOriginalIndex(null); // Hide original text when showing English translation
-  };
+  //   setShowEnglishIndex(index);
+  //   setShowOriginalIndex(null); // Hide original text when showing English translation
+  // };
 
   const handleShowOriginal = (index) => {
     // const updatedConversation = [...conversation];
@@ -320,23 +338,31 @@ const Recorder = ({ lessonData }) => {
 
           <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
             {conversation.map((message, index) => (
-              <div key={index} className={`d-flex ${message.sender === "user" ? "justify-content-end" : ""}`}>
+              <div key={index} className={`d-flex ${message.sender === "user" ? "justify-content-end" : ""}`} style={{ marginBottom: "10px" }}>
                 <span className={`p-2 rounded ${message.sender === "user" ? "bg-primary text-white" : "bg-light text-dark"}`} style={{ maxWidth: "75%", wordWrap: "break-word" }}>
                   {message.text}
 
                   {message.sender === "bot" && (
                     <>
-                      <button className="btn btn-link btn-sm p-0 ms-2" onClick={() => handleShowEnglish(index)}><small>な</small></button>
+                      <button
+                        className={`btn btn-sm ms-2 ${showEnglishIndex === index ? 'btn-success' : 'btn-primary'}`}
+                        onClick={() => {
+                          // Toggle the English translation display
+                          setShowEnglishIndex(prevIndex =>
+                            prevIndex === index ? null : index
+                          );
+                        }}
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          padding: '0'
+                        }}
+                      >な</button>
                       {showEnglishIndex === index && (
                         <div className="mt-2">
-                          <strong>English:</strong> {message.translation}
+                          <small style={{ color: 'grey' }}>{message.translation}</small>
                         </div>
                       )}
-                      {/* {showOriginalIndex === index && (
-                        <div className="mt-2">
-                          <strong>Original:</strong> {message.original}
-                        </div>
-                      )} */}
                     </>
                   )}
                 </span>
@@ -355,14 +381,17 @@ const Recorder = ({ lessonData }) => {
             className="form-control mb-3"
           />
 
-          <div className="d-flex gap-2 flex-wrap mb-3">
+
+          <div className="d-flex gap-2 flex-wrap mb-3" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
             {randomPhrases.map((phrase, index) => (
               <button
                 key={index}
                 className="btn btn-secondary"
-                onClick={() => setEditableTranscript((prev) => `${prev} ${phrase}`.trim())}>
-
-                {phrase}
+                onClick={() => setEditableTranscript((prev) => `${prev} ${phrase}`.trim())}
+                onMouseEnter={() => setHoveredPhraseIndex(index)}
+                onMouseLeave={() => setHoveredPhraseIndex(null)}
+              >
+                {hoveredPhraseIndex === index ? phrasesData.common_phrases.find(p => p[language] === phrase)["en-US"] : phrase}
               </button>
             ))}
           </div>

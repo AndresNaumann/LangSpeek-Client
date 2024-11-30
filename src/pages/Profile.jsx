@@ -83,7 +83,7 @@ const Profile = () => {
 
                 console.log('Account deleted successfully.');
                 // You may want to navigate to a different page after deletion
-                navigate('/'); 
+                navigate('/');
             } catch (error) {
                 console.error('Error deleting account:', error);
             }
@@ -109,8 +109,10 @@ const Profile = () => {
                     <p className="card-text"><strong>Email:</strong> {userData.email}</p>
                     <p className="card-text"><strong>Phone:</strong> {userData.phone}</p>
                     <p className="card-text"><strong>Address:</strong> {userData.address}</p>
+                    <p className='card-text'><strong>Native Language:</strong> {userData.nativeLanguage}</p>
+                    <p className='card-text'><strong>Primary Language you are Learning:</strong> {userData.openChatDefaultLearningLanguage}</p>
                     <Button variant="primary" onClick={handleShowEditModal}
-                    style={{marginRight: "10px"}}>
+                        style={{ marginRight: "10px" }}>
                         Edit
                     </Button>
                     <Button variant="danger" onClick={handleDeleteAccount}>
@@ -133,6 +135,7 @@ const Profile = () => {
                                 name="name"
                                 value={editData.name}
                                 onChange={handleEditChange}
+                                style={{ marginBottom: "10px" }}
                             />
                         </Form.Group>
                         <Form.Group controlId="formEmail">
@@ -142,6 +145,7 @@ const Profile = () => {
                                 name="email"
                                 value={editData.email}
                                 onChange={handleEditChange}
+                                style={{ marginBottom: "10px" }}
                             />
                         </Form.Group>
                         <Form.Group controlId="formPhone">
@@ -151,6 +155,7 @@ const Profile = () => {
                                 name="phone"
                                 value={editData.phone}
                                 onChange={handleEditChange}
+                                style={{ marginBottom: "10px" }}
                             />
                         </Form.Group>
                         <Form.Group controlId="formAddress">
@@ -160,8 +165,46 @@ const Profile = () => {
                                 name="address"
                                 value={editData.address}
                                 onChange={handleEditChange}
+                                style={{ marginBottom: "10px" }}
                             />
                         </Form.Group>
+                        <Form.Group controlId="formNativeLanguage">
+                            <Form.Label>Native Language</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="nativeLanguage"
+                                value={editData.nativeLanguage}
+                                onChange={handleEditChange}
+                                style={{ marginBottom: "10px" }}
+                            >
+                                <option value="English" >English</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="French">French</option>
+                                <option value="German">German</option>
+                                <option value="Mandarin Chinese">Mandarin Chinese</option>
+                                <option value="Russian">Russian</option>
+                                <option value="Finnish">Finnish</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="formOpenChatDefaultLearningLanguage">
+                            <Form.Label>Primary Language you are Learning</Form.Label>
+                            <Form.Control
+                                as="select"
+                                name="openChatDefaultLearningLanguage"
+                                value={editData.openChatDefaultLearningLanguage}
+                                onChange={handleEditChange}
+                                style={{ marginBottom: "10px" }}
+                            >
+                                <option value="en-US" >English</option>
+                                <option value="es-MX">Spanish</option>
+                                <option value="fr-FR">French</option>
+                                <option value="de-DE">German</option>
+                                <option value="zh-CN">Chinese</option>
+                                <option value="ru">Russian</option>
+                                <option value="fi">Finnish</option>
+                            </Form.Control>
+                        </Form.Group>
+
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
