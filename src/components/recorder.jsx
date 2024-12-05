@@ -60,24 +60,11 @@ const Recorder = ({ lessonData }) => {
         "http://localhost:4000/",
         {
           text,
-          translation: englishText,
-          lessonData: lessonData || null,
         },
         { responseType: "json" }
       );
-      const audioBlob = new Blob(
-        [
-          new Uint8Array(
-            atob(response.data.audio)
-              .split("")
-              .map((char) => char.charCodeAt(0))
-          ),
-        ],
-        { type: "audio/mp3" }
-      );
-      setData(URL.createObjectURL(audioBlob));
+      
       setCompletedText(response.data.text);
-      setEnglishText(response.data.translation);
       return response.data;
     } catch (error) {
       console.error("Error downloading audio:", error);
@@ -183,13 +170,6 @@ const Recorder = ({ lessonData }) => {
     setEditableTranscript(transcript);
   }, [transcript]);
 
-  // Set the suggestions to update when ever the language changes
-
-  useEffect(() => {
-    const phrases = phrasesData.common_phrases.map(phrase => phrase[language]);
-    const selectedPhrases = phrases.sort(() => 0.5 - Math.random()).slice(0, 3);
-    setRandomPhrases(selectedPhrases);
-  }, [language]);
 
   //Make the conversation scroll the bottom when ever a new message is added.
 
@@ -203,42 +183,6 @@ const Recorder = ({ lessonData }) => {
 
   // Display the english translation or original text
 
-  // const handleShowEnglish = (index) => {
-  //   // const updatedConversation = [...conversation];
-  //   // updatedConversation[index].text = englishText;
-  //   // setConversation(updatedConversation);
-
-  //   setShowEnglishIndex(index);
-  //   setShowOriginalIndex(null); // Hide original text when showing English translation
-  // };
-
-  const handleShowOriginal = (index) => {
-    // const updatedConversation = [...conversation];
-    // updatedConversation[index].text = completedText;
-    // setConversation(updatedConversation);
-    setShowEnglishIndex(index);
-    setShowOriginalIndex(null); // Hide original text when showing English translation
-  };
-
-  const handleResetTextBox = () => {
-    resetTranscript();
-    setEditableTranscript("");
-  }
-
-  const handleAddToDictionary = (word) => {
-    setCustomDictionary([...customDictionary, word]);
-  };
-
-  const renderWordPopover = (word) => (
-    <Popover id="popover-basic">
-      <Popover.Body>
-        <Button size="sm" onClick={() => handleAddToDictionary(word)}>
-          Add to Dictionary
-        </Button>
-      </Popover.Body>
-    </Popover>
-  );
-
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
@@ -246,29 +190,8 @@ const Recorder = ({ lessonData }) => {
       className="container d-flex justify-content-center p-4"
       style={{ position: "relative" }}
     >
-      <div className="w-200" style={{ maxWidth: "800px" }}>
+      <div className="w-200" style={{ maxWidth: "800px", width: "800px" }}>
 
-        {/* Dictionary Sidebar */}
-        <button
-          className="btn mb-3"
-          style={{
-            position: "fixed",
-            top: "70px",
-            right: "1rem",
-            zIndex: 1000,
-            backgroundColor: "white",
-            border: "1px solid #ccc",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            padding: "0.5rem 1rem",
-            borderRadius: "5px",
-            transition: "box-shadow 0.2s ease-in-out",
-            display: showDictionary ? "none" : "block", // Hide button when dictionary is shown
-            opacity: showDictionary ? 0 : 1, // Fade out when dictionary is shown
-          }}
-          onClick={() => setShowDictionary(!showDictionary)}
-        >
-          Dictionary
-        </button>
         <div
           className={`dictionary-sidebar ${showDictionary ? "show" : ""}`}
           style={{
@@ -336,7 +259,7 @@ const Recorder = ({ lessonData }) => {
             </select>
           </div>
 
-          <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
+          <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "500px", overflowY: "auto" }}>
             {conversation.map((message, index) => (
               <div key={index} className={`d-flex ${message.sender === "user" ? "justify-content-end" : ""}`} style={{ marginBottom: "10px" }}>
                 <span className={`p-2 rounded ${message.sender === "user" ? "bg-primary text-white" : "bg-light text-dark"}`} style={{ maxWidth: "75%", wordWrap: "break-word" }}>
@@ -344,20 +267,7 @@ const Recorder = ({ lessonData }) => {
 
                   {message.sender === "bot" && (
                     <>
-                      <button
-                        className={`btn btn-sm ms-2 ${showEnglishIndex === index ? 'btn-success' : 'btn-primary'}`}
-                        onClick={() => {
-                          // Toggle the English translation display
-                          setShowEnglishIndex(prevIndex =>
-                            prevIndex === index ? null : index
-                          );
-                        }}
-                        style={{
-                          width: '20px',
-                          height: '20px',
-                          padding: '0'
-                        }}
-                      >な</button>
+                      
                       {showEnglishIndex === index && (
                         <div className="mt-2">
                           <small style={{ color: 'grey' }}>{message.translation}</small>
@@ -371,7 +281,7 @@ const Recorder = ({ lessonData }) => {
             <div ref={messagesEndRef} />
           </div>
 
-          <audio src={data} autoPlay controls className="w-100 mb-3" />
+          {/* <audio src={data} autoPlay controls className="w-200 mb-3" /> */}
           <input
             ref={inputRef}
             type="text"
@@ -381,28 +291,10 @@ const Recorder = ({ lessonData }) => {
             className="form-control mb-3"
           />
 
-
-          <div className="d-flex gap-2 flex-wrap mb-3" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
-            {randomPhrases.map((phrase, index) => (
-              <button
-                key={index}
-                className="btn btn-secondary"
-                onClick={() => setEditableTranscript((prev) => `${prev} ${phrase}`.trim())}
-                onMouseEnter={() => setHoveredPhraseIndex(index)}
-                onMouseLeave={() => setHoveredPhraseIndex(null)}
-              >
-                {hoveredPhraseIndex === index ? phrasesData.common_phrases.find(p => p[language] === phrase)["en-US"] : phrase}
-              </button>
-            ))}
-          </div>
-
           <div className="d-flex justify-content-between">
             <button className="btn btn-primary" onClick={handleSendMessage}>
-              Send
-            </button>
-            <button className="btn btn-danger" onClick={() => handleResetTextBox()}>
-              Clear
-            </button>
+              Send 
+            </button>         
           </div>
         </div>
       </div>

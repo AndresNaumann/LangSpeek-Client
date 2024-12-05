@@ -60,7 +60,7 @@ function Navigation() {
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
         <Navbar.Brand as={Link} to="/">
-          IMRS
+          StressLess Chat
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -71,19 +71,19 @@ function Navigation() {
             <Nav.Link as={Link} to="/about">
               About
             </Nav.Link>
-            <Nav.Link as={Link} to="/contact">
+            {/* <Nav.Link as={Link} to="/contact">
               Contact
-            </Nav.Link>
+            </Nav.Link> */}
             {user && role === "user" && (
               <Nav.Link as={Link} to="/joinclass">
                 Join a Classroom
               </Nav.Link>
             )}
-            {user && (role === "student") && (
+            {/* {user && (role === "student") && (
               <Nav.Link as={Link} to="/classroom">
                 My Class
               </Nav.Link>
-            )}
+            )} */}
             {user && role === "admin" && (
               <Nav.Link as={Link} to="/admin">
                 Admin
