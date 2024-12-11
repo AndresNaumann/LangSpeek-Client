@@ -5,6 +5,7 @@ import SpeechRecognition, {
 import phrasesEsData from "../data/phrases_es.json";
 import phrasesFiData from "../data/phrases_fi.json";
 import phrasesData from "../data/phrases.json";
+import startData from "../data/start.json";
 import MicIcon from "@mui/icons-material/Mic";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
@@ -144,6 +145,7 @@ const Recorder = ({ lessonData }) => {
       }
 
       const phrases = phrasesData.common_phrases.map(phrase => phrase[language]);
+      // const phrases = phrasesData.common_phrases.map(phrase => phrase[language]);
       const selectedPhrases = phrases.sort(() => 0.5 - Math.random()).slice(0, 3);
       setRandomPhrases(selectedPhrases);
 
@@ -249,7 +251,7 @@ const Recorder = ({ lessonData }) => {
       <div className="w-200" style={{ maxWidth: "800px" }}>
 
         {/* Dictionary Sidebar */}
-        <button
+        {/* <button
           className="btn mb-3"
           style={{
             position: "fixed",
@@ -268,7 +270,7 @@ const Recorder = ({ lessonData }) => {
           onClick={() => setShowDictionary(!showDictionary)}
         >
           Dictionary
-        </button>
+        </button> */}
         <div
           className={`dictionary-sidebar ${showDictionary ? "show" : ""}`}
           style={{
@@ -319,7 +321,7 @@ const Recorder = ({ lessonData }) => {
         <div>
           <h4>{lessonData && <p>Lesson Name: {lessonData.lessonTitle}</p>}</h4>
 
-          <div className="d-flex align-items-center mb-4">
+          {/* <div className="d-flex align-items-center mb-4">
             <MicIcon className="me-4" />
             <p className="m-0">Listening in</p>
             <select
@@ -334,9 +336,10 @@ const Recorder = ({ lessonData }) => {
               <option value="de-DE">German</option>
               <option value="fi">Finnish</option>
             </select>
-          </div>
+          </div> */}
+          <h4>Chat</h4>
 
-          <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
+          <div className="conversation-container border rounded p-3 mb-3" style={{ maxHeight: "400px", overflowY: "auto", width: "500px" }}>
             {conversation.map((message, index) => (
               <div key={index} className={`d-flex ${message.sender === "user" ? "justify-content-end" : ""}`} style={{ marginBottom: "10px" }}>
                 <span className={`p-2 rounded ${message.sender === "user" ? "bg-primary text-white" : "bg-light text-dark"}`} style={{ maxWidth: "75%", wordWrap: "break-word" }}>
@@ -371,18 +374,18 @@ const Recorder = ({ lessonData }) => {
             <div ref={messagesEndRef} />
           </div>
 
-          <audio src={data} autoPlay controls className="w-100 mb-3" />
+          {/* <audio src={data} autoPlay controls className="w-200 mb-3" style={{width: "500px"}} /> */}
           <input
             ref={inputRef}
             type="text"
-            placeholder="Type your message here..."
+            placeholder="Ask a question about the Heikkuri Family"
             value={editableTranscript}
             onChange={(e) => setEditableTranscript(e.target.value)}
             className="form-control mb-3"
           />
 
 
-          <div className="d-flex gap-2 flex-wrap mb-3" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
+          {/* <div className="d-flex gap-2 flex-wrap mb-3" style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
             {randomPhrases.map((phrase, index) => (
               <button
                 key={index}
@@ -394,7 +397,7 @@ const Recorder = ({ lessonData }) => {
                 {hoveredPhraseIndex === index ? phrasesData.common_phrases.find(p => p[language] === phrase)["en-US"] : phrase}
               </button>
             ))}
-          </div>
+          </div> */}
 
           <div className="d-flex justify-content-between">
             <button className="btn btn-primary" onClick={handleSendMessage}>
