@@ -61,25 +61,32 @@ const ChatHistory = () => {
 
             {conversations.length > 0 ? (
                 <ul className="list-group">
-                    {conversations.map((conversation) => (
-                        <li key={conversation.id} className="list-group-item">
-                            <div>
-                                <strong>Conversation ID:</strong> {conversation.id}
-                            </div>
-                            <div>
-                                <strong>Lesson ID:</strong> {conversation.lessonId}
-                            </div>
-                            <div>
-                                <strong>Start Time:</strong> {new Date(conversation.startTime?.seconds * 1000).toLocaleString()}
-                            </div>
-                            <button
-                                className="btn btn-primary mt-2"
-                                onClick={() => handleViewMessages(conversation.id)}
-                            >
-                                View Messages
-                            </button>
-                        </li>
-                    ))}
+                    {conversations
+                        .filter((conversation) => {
+                            const startTime = conversation.startTime?.seconds;
+                            const conversationDate = new Date(startTime * 1000);
+                            const aprilFirst = new Date('2025-04-01T00:00:00');
+                            return conversationDate > aprilFirst;
+                        })
+                        .map((conversation) => (
+                            <li key={conversation.id} className="list-group-item">
+                                <div>
+                                    <strong>Conversation ID:</strong> {conversation.id}
+                                </div>
+                                <div>
+                                    <strong>Type:</strong> {conversation.lessonId}
+                                </div>
+                                <div>
+                                    <strong>Start Time:</strong> {new Date(conversation.startTime?.seconds * 1000).toLocaleString()}
+                                </div>
+                                <button
+                                    className="btn btn-primary mt-2"
+                                    onClick={() => handleViewMessages(conversation.id)}
+                                >
+                                    View Messages
+                                </button>
+                            </li>
+                        ))}
                 </ul>
             ) : (
                 <div>No conversations found.</div>

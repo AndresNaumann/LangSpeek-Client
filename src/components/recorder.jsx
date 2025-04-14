@@ -60,15 +60,16 @@ const Recorder = ({ lessonData }) => {
         "http://localhost:4000/",
         {
           text,
+          lessonData
         },
         { responseType: "json" }
       );
-      
+
       setCompletedText(response.data.text);
       return response.data;
     } catch (error) {
-      console.error("Error downloading audio:", error);
-      setError("Failed to download audio.");
+      console.error("Error downloading response:", error);
+      setError("Failed to download response.");
       return null;
     }
   };
@@ -142,6 +143,10 @@ const Recorder = ({ lessonData }) => {
   };
 
   //// IMPLEMENT SPEECH RECOGNITION
+
+  const clearText = () => {
+    setEditableTranscript("");  // Clears the text input field
+  };
 
   const {
     transcript,
@@ -267,7 +272,7 @@ const Recorder = ({ lessonData }) => {
 
                   {message.sender === "bot" && (
                     <>
-                      
+
                       {showEnglishIndex === index && (
                         <div className="mt-2">
                           <small style={{ color: 'grey' }}>{message.translation}</small>
@@ -293,8 +298,10 @@ const Recorder = ({ lessonData }) => {
 
           <div className="d-flex justify-content-between">
             <button className="btn btn-primary" onClick={handleSendMessage}>
-              Send 
-            </button>         
+              Send
+            </button>
+            <button className="btn btn-secondary" onClick={resetTranscript}>Clear</button> {/* Clear button */}
+
           </div>
         </div>
       </div>
